@@ -6,8 +6,8 @@ var pool = mysql.createPool({
     connectionLimit: 5,
     host: 'localhost',
     user: 'root',
-    database: 'db_3',
-    password: 'Wkdtlzm97!'
+    database: 'db_project',
+    password: ''
 });
 
 router.get('/', function(req, res, next){
@@ -29,7 +29,7 @@ router.post('/sign',function(req, res, next){
     pool.getConnection(function (err, connection){
 
         var sqlForInsertBoard = "insert into student(sname, student_id, passwd, class, major, gender) values(?,?,?,?,?,?)"
-        connection.query(sqlForInsertBoard,datas,function(err, rows) {
+        connection.query(sqlForInsertBoard, datas, function(err, rows) {
             if(err) console.error("err : " + err);
             console.log("rows : " + JSON.stringify(rows));
             res.redirect('/login');
