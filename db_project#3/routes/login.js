@@ -6,13 +6,19 @@ var pool = mysql.createPool({
     connectionLimit: 5,
     host: 'localhost',
     user: 'root',
+<<<<<<< HEAD
     database: 'db_3',
     password: 'Wkdtlzm97!'
+=======
+    database: 'db_project',
+    password: ''
+>>>>>>> 82428efcf393aa7960f5868a5e2a46caf89ebfe3
 });
 
 router.get('/', function(req, res, next){
     res.render('login', {title: 'TOG 정보관리 시스템'});
 });
+<<<<<<< HEAD
 router.post('/', function(req, res, next){
     var student_id = req.body.student_id;
     var passwd = req.body.passwd;
@@ -30,6 +36,9 @@ router.post('/', function(req, res, next){
         });
     });
 });
+=======
+
+>>>>>>> 82428efcf393aa7960f5868a5e2a46caf89ebfe3
 router.get('/sign', function(req, res, next){
     res.render('sign', {title : "회원가입"});
 });
@@ -41,6 +50,7 @@ router.post('/sign',function(req, res, next){
     var major = req.body.major;
     var gender = req.body.gender;
     var datas = [sname, student_id, passwd, sclass, major, gender];
+<<<<<<< HEAD
     pool.getConnection(function (err, connection){
         var sqlForInsertBoard = "select * from student where student_id = ?"
         connection.query(sqlForInsertBoard, student_id, function(err, results) {
@@ -63,6 +73,16 @@ router.post('/sign',function(req, res, next){
                     });
                 });
             }
+=======
+
+    pool.getConnection(function (err, connection){
+
+        var sqlForInsertBoard = "insert into student(sname, student_id, passwd, class, major, gender) values(?,?,?,?,?,?)"
+        connection.query(sqlForInsertBoard, datas, function(err, rows) {
+            if(err) console.error("err : " + err);
+            console.log("rows : " + JSON.stringify(rows));
+            res.redirect('/login');
+>>>>>>> 82428efcf393aa7960f5868a5e2a46caf89ebfe3
             connection.release();
         });
     });
