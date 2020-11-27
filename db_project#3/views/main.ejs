@@ -15,11 +15,11 @@
         </div>
         <div>
 
-        <a href="/login/mypage" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
-        <a href="/login/register" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
-        <a href="/login/giveup" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
-        <a href="/login/search" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
-        <a href="/login/simul" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+        <a href="/<%= url %>/mypage" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+        <a href="/<%= url %>/register" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+        <a href="/<%= url %>/giveup" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+        <a href="/<%= url %>/search" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+        <a href="/<%= url %>/simul" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
         </div>
     </div>
 
@@ -52,8 +52,8 @@
             <%=oneItem.cname%>
         </td>
         <td>
-              <a style="cursor: pointer" onclick="appModule.goLctrumBoard('/std/lis/evltn/OnlineCntntsStdPage.do', '2020,2', 'U202023507H020014')">
-                <span>공지사항으로 이동</span>
+              <a href="/<%= oneItem.section_id %>/notice" style="cursor: pointer;color: black;text-decoration:none;">
+                공지사항으로 이동
               </a>
         </td>
 

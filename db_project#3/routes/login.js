@@ -7,7 +7,7 @@ var pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
 
-    database: 'db_project',
+    database: '',
     password: ''
 
 
@@ -42,13 +42,14 @@ router.get('/sign', function(req, res, next){
 router.get('/main/:student_id', function(req,res,next){
     var student_id = req.params.student_id;
     pool.getConnection(function(err, connection){
-        var sqlForSelectRow = "SELECT distinct course.cname from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=\"2018722079\" and student_info.s_semester=\"2\"and student_info.s_year=\"3\"";
-        connection.query(sqlForSelectRow, function(err, rows){
+        var sqlForSelectRow = "SELECT distinct course.cname,student_info.section_id from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=? and student_info.s_semester=\"2\"and student_info.s_year=\"3\"";
+        connection.query(sqlForSelectRow,[student_id], function(err, rows){
 
             if(err) console.error("err : " + err);
+            console.log(typeof(student_id));
             console.log("듣는 수업 : ", rows);
             console.log("수업 갯수 : ", rows.length);
-            res.render('main', {rows: rows});
+            res.render('main', {url: student_id,rows: rows});
             connection.release();
         });
     });
