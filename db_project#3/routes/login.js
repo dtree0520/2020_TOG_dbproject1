@@ -6,8 +6,6 @@ var pool = mysql.createPool({
     connectionLimit: 5,
     host: 'localhost',
     user: 'root',
-    database: 'db_project',
-    password: ''
 });
 
 router.get('/', function(req, res, next){
@@ -16,6 +14,11 @@ router.get('/', function(req, res, next){
 
 router.get('/sign', function(req, res, next){
     res.render('sign', {title : "회원가입"});
+});
+
+router.get('/main', function(req,res,next){
+    res.render('main', {title: '홈페이지'});
+
 });
 router.post('/sign',function(req, res, next){
     var sname = req.body.sname;
