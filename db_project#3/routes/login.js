@@ -6,13 +6,11 @@ var pool = mysql.createPool({
     connectionLimit: 5,
     host: 'localhost',
     user: 'root',
-<<<<<<< HEAD
+
     database: 'tutorial',
     password: 'keonyoung520'
-=======
-    database: 'db_3',
-    password: 'Wkdtlzm97!'
->>>>>>> 1fe2dd772446e20514ed260eacf192e8262e850e
+
+
 });
 
 router.get('/', function(req, res, next){
@@ -30,7 +28,7 @@ router.post('/', function(req, res, next){
                 res.send('<script type="text/javascript">alert("학번 또는 비밀번호를 잘 못 입력하셨습니다."); document.location.href="/login";</script>');
             }
             else
-                res.send(results);
+                res.redirect('/login/main/'+student_id);
             connection.release();
         });
     });
@@ -39,16 +37,27 @@ router.post('/', function(req, res, next){
 router.get('/sign', function(req, res, next){
     res.render('sign', {title : "회원가입"});
 });
-<<<<<<< HEAD
 
-router.get('/main', function(req,res,next){
-    res.render('main', {title: '홈페이지'});
+
+router.get('/main/:student_id', function(req,res,next){
+    var student_id = req.params.student_id;
+    pool.getConnection(function(err, connection){
+        var sqlForSelectRow = "SELECT distinct course.cname from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=\"2018722079\" and student_info.s_semester=\"2\"and tutorial.student_info.s_year=\"3\"";
+        connection.query(sqlForSelectRow, function(err, rows){
+
+            if(err) console.error("err : " + err);
+            console.log("듣는 수업 : ", rows);
+            console.log("수업 갯수 : ", rows.length);
+            res.render('main', {rows: rows[0]});
+            connection.release();
+        });
+    });
 
 });
-router.post('/sign',function(req, res, next){
-=======
+
+
 router.post('/sign',function(req, res, next) {
->>>>>>> 1fe2dd772446e20514ed260eacf192e8262e850e
+
     var sname = req.body.sname;
     var student_id = req.body.student_id;
     var passwd = req.body.passwd;
