@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <style>
+        #btn{}
+        #btn_group button{
+
+            background-color:rgba(0,0,0,0);
+        }
+        #btn_group button:hover{
+            background-color: darkgray;
+        }
+    </style>
+</head>
+<body>
+<h1><%= title%></h1>
+
+<br>
+<br>
+<form action="/login/notice" method="get">
+    <table border="1">
+        <tr>
+            <td>번호</td>
+            <td>제목</td>
+            <td>파일</td>
+            <td>작성자</td>
+            <td>작성일</td>
+            <td>조회수</td>
+        </tr>
+        <%
+        for(var i=0; i<rows.length; i++){
+            var check = 0;
+            var oneItem = rows[i];
+            var j = i+1;
+        %>
+
+        <tr>
+            <td><%=j%></td>
+            <td>
+                <div id = "btn_group">
+                    <button type="submit" id="btn" name = "idx" value = "<%= oneItem.idx%>"><%=oneItem.title%></button>
+                </div>
+            <td><%=oneItem.files%></td>
+            <td><%=oneItem.writer%></td>
+            <td><%=oneItem.wdate%></td>
+            <td><%=oneItem.hit%></td>
+        </tr>
+
+        <%
+        }
+        %>
+    </table>
+</form>
+</body>
+</html>
