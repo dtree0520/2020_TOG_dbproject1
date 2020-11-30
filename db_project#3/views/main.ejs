@@ -10,20 +10,18 @@
 <header>
     <div>
         <div>
-            <a href="/login/main" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
+            <a href="/login/main/<%= sid %>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
             <br></br>
         </div>
         <div>
 
-            <a href="/<%= url %>/mypage" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
-            <a href="/<%= url %>/register" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
-            <a href="/<%= url %>/giveup" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
-            <a href="/<%= url %>/search" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
-            <a href="/<%= url %>/simul" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+            <a href="/login/mypage/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+            <a href="/login/register/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+            <a href="/login/drop/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+            <a href="/login/search/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+            <a href="/login/simul/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
         </div>
     </div>
-
-
 
 
 </header>
@@ -32,34 +30,45 @@
 <div style="font-size:1.7em;">
     <p>수강 과목 현황</p>
 </div>
-<table id="yes-deadline" style="width: 20%; display: table;">
+<table id="yes-deadline" style="width: 100%; display: table; text-align: center;" border="1">
     <colgroup>
-        <col width="21%">
-        <col width="25%">
-        <col width="25%">
-        <col width="25%">
+        <col width="50%">
+        <col width="50%">
     </colgroup>
     <thead>
     <tr style="border-bottom: 1px solid #dce3eb; font-weight: bold; height: 30px">
-        <td></td>
-        <td></td>
+        <td>과목</td>
+        <td>공지사항</td>
 
     </tr>
     </thead>
     <tbody>
     <%
-    for(var i=0; i<rows.length; i++){
-        var oneItem = rows[i];
+    if(rows.length!=0){
+        for(var i=0; i<rows.length; i++){
+            var oneItem = rows[i];
     %>
     <tr style="border-bottom: 1px solid #dce3eb; height: 30px">
         <td style="font-weight: bold;color: black;font-size: 1.0em;text-decoration:none;">
             <%=oneItem.cname%>
         </td>
         <td>
-            <a href="/login/notice/<%= oneItem.section_id %>" style="cursor: pointer;color: black;text-decoration:none;">
+            <a href="/login/notice/<%= oneItem.section_id %>" style="cursor: pointer;color: blue;text-decoration:underline;">
                 공지사항으로 이동
             </a>
         </td>
+    </tr>
+    <%
+        }
+    }
+    else{
+    %>
+
+    <tr style="border-bottom: 1px solid #dce3eb; height: 30px">
+        <td style="font-weight: bold;color: black;font-size: 1.0em;text-decoration:none;">
+            현재 수강중인 강의가 없습니다.
+        </td>
+
     </tr>
     <%
     }

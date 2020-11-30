@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascript/jquery-3.5.1.min.js"></script>
+</head>
+<header>
+    <div>
+        <div>
+            <a href="/login/main/<%= sid %>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
+            <br></br>
+        </div>
+        <div>
+            <a href="/login/mypage/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+            <a href="/login/register/<%=sid%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+            <a href="/login/drop/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+            <a href="/login/search/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+            <a href="/login/simul/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+        </div>
+    </div>
+</header>
+
+<body>
+<br></br><br></br><br></br>
+<div>
+    <a style="font-weight: bold; color: black;font-size: 2.0em;text-decoration:none;text-align:left;"><%=title%></a>
+</div>
+<br> <br> <br> <br>
+
+<table id="yes-deadline" style="width: 100%; display: table;">
+    <colgroup>
+        <col width="40%">
+        <col width="20%">
+        <col width="15%">
+        <col width="15%">
+        <col width="10%">
+    </colgroup>
+    <thead>
+    <tr style="border-bottom: 1px solid #dce3eb; font-weight: bold; height: 60px">
+
+        <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">과목명</td>
+        <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">담당교수</td>
+        <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">학점</td>
+        <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">강의시간</td>
+        <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">여석</td>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <%
+    for(var i=0; i<rows.length; i++){
+        var oneItem = rows[i];
+    %>
+    <tr style="border-bottom: 1px solid #dce3eb; height: 30px; cursor: pointer;" class = "checkTr">
+        <td style="color: black;font-size: 1.4em;text-decoration:none;">
+            <%=oneItem.cname%>
+        </td>
+        <td style="color: black;font-size: 1.4em;text-decoration:none;">
+            <%=oneItem.instructor%>
+        </td>
+        <td style="color: black;font-size: 1.4em;text-decoration:none;">
+            <%=oneItem.credit_hours%>
+        </td>
+        <td style="color: black;font-size: 1.4em;text-decoration:none;">
+            <%=oneItem.ltime%>
+        </td>
+        <td style="color: black;font-size: 1.4em;text-decoration:none;">
+            <%=oneItem.total_number%>
+        </td>
+    </tr>
+    <%
+    }
+    %>
+    </tbody>
+</table>
+
+<h1>수강 포기</h1>
+<br>
+<form id="register" action="/login/register/<%=sid%>" method="post">
+    <table border="1" width = "100%" style="text-align: center;">
+        <colgroup>
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+        </colgroup>
+        <tr style="background-color: grey;">
+            <td>과목명</td>
+            <td>담당교수</td>
+            <td>학점</td>
+            <td>강의시간</td>
+        </tr>
+
+        <tr>
+            <td><span id = "course_name"></span></td>
+            <td><span id = "instructor"></span></td>
+            <td><span id = "credit_hours"></span></td>
+            <td><span id = "lecture_time"></span></td>
+        </tr>
+
+    </table>
+    <td><input type="password" id="passwd"></td>
+</form>
+<div style="float: right;"><button type="submit" id="submitBtn">수강포기</button></div>
+<script>
+    $(".checkTr").click(function(){
+        var tr = $(this);
+        var td = tr.children();
+        var cname = td.eq(0).text();
+        var instructor =td.eq(1).text();
+        var credit_hours = td.eq(2).text();
+        var lecture_time = td.eq(3).text();
+
+        console.log("과목 이름 : " + JSON.stringify(name));
+        $("#course_name").html(cname);
+        $("#instructor").html(instructor);
+        $("#credit_hours").html(credit_hours);
+        $("#lecture_time").html(lecture_time);
+        return true;
+    });
+
+    $("#submitBtn").click(function(){
+        var pass = passwd;
+        console.log(pass);
+        if($("#password") != pass){
+            $("#passwd").val("");
+            $("#passwd").focus();
+            alert("비밀번호가 일치하지 않습니다.");
+            return false;
+        }
+        $("#drop").submit();
+    });
+</script>
+</body>
+</html>
