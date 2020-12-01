@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <script src="/javascript/jquery-3.5.1.min.js"></script>
+    <script>
+        function checkid(){
+            alert("없는 학번이거나 학년, 학기를 잘못 선택하셨습니다.");
+            return true;
+        }
+    </script>
+</head>
+<br>
+<header>
+    <%if(!check){%>
+        <script>checkid();</script>
+    <%}%>
+    <div>
+        <div>
+            <a href="/login/main/<%=s_id%>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
+            <br></br>
+        </div>
+        <div>
+            <a href="/login/mypage/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+            <a href="/login/register/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+            <a href="/login/drop/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+            <a href="/login/search/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+            <a href="/login/simul/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+        </div>
+    </div>
+</header>
+<body>
+<form action="/login/search/<%=s_id%>" method="post">
+    <input type="hidden" name ="s_id" id="s_id" value="<%=s_id%>">
+    <table border="1" width = "100%" style="text-align: center;">
+        <colgroup>
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+            <col width="25%">
+        </colgroup>
+        <tr style="background-color: grey;">
+            <th colspan="4">검색할 학생의 학번</th>
+        </tr>
+        <tr style="background-color: grey;">
+            <td>
+                학번
+                <input type="text" name="student_id" id="student_id" size="50" maxLength="12">
+            </td>
+            <td>
+                학년
+                <select name="s_year">
+                    <option value="none">선택</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </td>
+            <td>
+                학기
+                <select name="s_semester">
+                    <option value="none">선택</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                </select>
+            </td>
+            <td>
+                <button type ="submit" id="searchBtn" class="btn btn-secondary">검색</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

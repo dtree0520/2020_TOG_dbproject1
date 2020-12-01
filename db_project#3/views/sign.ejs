@@ -2,42 +2,51 @@
 <html>
 <head>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <script src="/javascript/jquery-3.5.1.min.js"></script>
     <title><%= title %></title>
 </head>
 <body>
 <h1><%= title %></h1>
-
 <form action="/login/sign" method="post">
-    <table width="100" border="1">
-        <tr>
-            <th>Name</th>
-            <td><input type="text" name="sname" id="sname" size="15" maxlength="20"></td>
-            <th>Student_ID*</th>
-            <td><input type="text" name="student_id" id="student_id" size="15" maxLength="12"></td>
-        </tr>
-        <tr>
-            <th>Passwd*</th>
-            <td><input type="password" name="passwd" id="passwd" size="15" maxlength="12"></td>
-            <th>Gender</th>
-            <td>
-                <input type="radio" name="gender" value="남" checked="checked">남
-                <input type="radio" name="gender" value="여">여
-            </td>
-        </tr>
-        <tr>
-            <th>class</th>
-            <td><input type="text" name = "class" id="class" size="15" maxlength="50"></td>
-            <th>major</th>
-            <td><input type="text" name = "major" id="major" size="15" maxlength="50"></td>
-        </tr>
-        <tr>
-            <td colspan="4">
-                <a href="/login" style = "color:black; text-decoration: none;">Cancel</a>
-                <button type ="submit">Submit</button>
-            </td>
-        </tr>
-    </table>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="student_id">학번</label>
+            <input type="text" class="form-control" id="student_id" name="student_id" placeholder="ex)2016722091">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="passwd">Password</label>
+            <input type="password" class="form-control" id="passwd" name="passwd" placeholder="****">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="inputAddress">이름</label>
+            <input type="text" class="form-control" id="sname" name="sname" placeholder="ex)홍길동">
+        </div>
+    </div>
+    <div class="form-row ">
+        <div class="form-group col-md-6">
+            <label for="class">학년</label>
+            <input type="text" class="form-control" id="class" name="class" placeholder="ex)1,2,3">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="major">전공</label>
+            <input type="major" class="form-control" id="major" name="major" placeholder="ex)컴퓨터정보공학부">
+        </div>
+    </div>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <input class="form-check-input" type="radio" name="gender" id="gender" value="남" checked>
+    <label class="form-check-label" for="gender">
+        남
+    </label>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <input class="form-check-input" type="radio" name="gender" id="gender" value="여" checked>
+    <label class="form-check-label" for="gender">
+        여
+    </label>
+    <button type="submit" class="btn btn-primary" style="float: right">Sign in</button>
 </form>
+
 </body>
 </html>

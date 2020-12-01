@@ -3,55 +3,58 @@
 <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
-    <style>
-        #btn{}
-        #btn_group button{
-
-            background-color:rgba(0,0,0,0);
-        }
-        #btn_group button:hover{
-            background-color: darkgray;
-        }
-    </style>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <script src="/javascript/jquery-3.5.1.min.js"></script>
 </head>
+<br>
+<header>
+    <div>
+        <div>
+            <a href="/login/main/<%= sid %>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
+            <br></br>
+        </div>
+        <div>
+
+            <a href="/login/mypage/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+            <a href="/login/register/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+            <a href="/login/drop/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+            <a href="/login/search/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+            <a href="/login/simul/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+        </div>
+    </div>
+</header>
 <body>
+<br></br><br></br><br></br>
 <h1><%= title%></h1>
+<table border="1" width="100%">
+    <tr>
+        <td>번호</td>
+        <td>제목</td>
+        <td>파일</td>
+        <td>작성자</td>
+        <td>작성일</td>
+        <td>조회수</td>
+    </tr>
+    <%
+    for(var i=0; i<rows.length; i++){
+        var check = 0;
+        var oneItem = rows[i];
+        var j = i+1;
+    %>
 
-<br>
-<br>
-<form action="/login/notice" method="get">
-    <table border="1">
-        <tr>
-            <td>번호</td>
-            <td>제목</td>
-            <td>파일</td>
-            <td>작성자</td>
-            <td>작성일</td>
-            <td>조회수</td>
-        </tr>
-        <%
-        for(var i=0; i<rows.length; i++){
-            var check = 0;
-            var oneItem = rows[i];
-            var j = i+1;
-        %>
+    <tr class="checkTr">
+        <td><%=j%></td>
+        <td><a href="/login/<%=sid%>/notice/<%=oneItem.idx%>"><%=oneItem.title%></a></td>
+        <td><%=oneItem.files%></td>
+        <td><%=oneItem.writer%></td>
+        <td><%=oneItem.wdate%></td>
+        <td><%=oneItem.hit%></td>
+    </tr>
 
-        <tr>
-            <td><%=j%></td>
-            <td>
-                <div id = "btn_group">
-                    <button type="submit" id="btn" name = "idx" value = "<%= oneItem.idx%>"><%=oneItem.title%></button>
-                </div>
-            <td><%=oneItem.files%></td>
-            <td><%=oneItem.writer%></td>
-            <td><%=oneItem.wdate%></td>
-            <td><%=oneItem.hit%></td>
-        </tr>
-
-        <%
-        }
-        %>
-    </table>
-</form>
+    <%
+    }
+    %>
+</table>
+<a href = "/login/main/<%=sid%>"><input type="button" id="btn" style="float:right" value="돌아가기"/></a>
 </body>
 </html>

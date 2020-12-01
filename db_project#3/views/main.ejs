@@ -3,8 +3,23 @@
 <head>
     <meta charset='utf-8'>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <script src="/javascript/jquery-3.5.1.min.js"></script>
-
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            text-align: center;
+            width : 50px;
+            height: 30px;
+        }
+        th, td {
+            padding: 10px;
+        }
+        th {
+            text-align: center;
+        }
+    </style>
 </head>
 <br>
 <header>
@@ -23,10 +38,9 @@
         </div>
     </div>
 
-
 </header>
 <body>
-<br></br><br></br><br></br>
+<br></br>
 <div style="font-size:1.7em;">
     <p>수강 과목 현황</p>
 </div>
@@ -45,36 +59,358 @@
     <tbody>
     <%
     if(rows.length!=0){
-        for(var i=0; i<rows.length; i++){
-            var oneItem = rows[i];
+    for(var i=0; i<rows.length; i++){
+        var oneItem = rows[i];
     %>
     <tr style="border-bottom: 1px solid #dce3eb; height: 30px">
         <td style="font-weight: bold;color: black;font-size: 1.0em;text-decoration:none;">
             <%=oneItem.cname%>
         </td>
         <td>
-            <a href="/login/notice/<%= oneItem.section_id %>" style="cursor: pointer;color: blue;text-decoration:underline;">
+            <a href="/login/<%=sid%>/noticelist/<%= oneItem.section_id %>" style="cursor: pointer;color: blue;text-decoration:underline;">
                 공지사항으로 이동
             </a>
         </td>
     </tr>
     <%
-        }
+    }
     }
     else{
     %>
 
-    <tr style="border-bottom: 1px solid #dce3eb; height: 30px">
-        <td style="font-weight: bold;color: black;font-size: 1.0em;text-decoration:none;">
-            현재 수강중인 강의가 없습니다.
-        </td>
+        <tr style="border-bottom: 1px solid #dce3eb; height: 30px">
+            <td style="font-weight: bold;color: black;font-size: 1.0em;text-decoration:none;">
+                현재 수강중인 강의가 없습니다.
+            </td>
 
-    </tr>
+        </tr>
     <%
     }
     %>
-
     </tbody>
 </table>
+<div>
+    <br>
+    <h1><%=year%>학년 <%=sem%>학기 시간표</h1>
+    <table style="width:100%; height: 100px">
+        <tr>
+            <th style="background-color: gray"> </th>
+            <th id="one" style="background-color: gray">월</th>
+            <th id="two" style="background-color: gray">화</th>
+            <th id="thr" style="background-color: gray">수</th>
+            <th id="for" style="background-color: gray">목</th>
+            <th id="fiv" style="background-color: gray">금</th>
+        </tr>
+        <tbody>
+        <%
+            var name = new Array();
+            var fday = new Array();
+            var tday = new Array();
+            var ftime = new Array();
+            var ttime = new Array();
+            var color = new Array();
+            if(results != null) {
+                if (results.length != 0) {
+                    for (var i = 0; i < results.length; i++) {
+                        var oneItem = results[i];
+                        name[i] = oneItem.cname;
+                        fday[i] = oneItem.ltime.substring(0, 1);
+                        ftime[i] = oneItem.ltime.substring(1, 2);
+                        if (oneItem.ltime.substring(3, 4).charCodeAt(0) > 48 && oneItem.ltime.substring(3, 4).charCodeAt(0) < 56) {
+                            tday[i] = fday[i];
+                            ttime[i] = oneItem.ltime.substring(3, 4);
+                        } else {
+                            tday[i] = oneItem.ltime.substring(3, 4);
+                            ttime[i] = oneItem.ltime.substring(4, 5);
+                        }
+                    }
+                }
+                for (var i = 0; i < name.length; i++) {
+                    var r = Math.round(Math.random() * 255);
+                    var g = Math.round(Math.random() * 255);
+                    var b = Math.round(Math.random() * 255);
+                    var str = "rgb(" + r + "," + g + "," + b + ")";
+                    color[i] = str;
+                }
+            }
+        console.log(name);
+        console.log(fday);
+        console.log(ftime);
+        console.log(tday);
+        console.log(ttime);
+        var mon = new Array();
+        var moncolor = new Array();
+        var two = new Array();
+        var twocolor = new Array();
+        var thr = new Array();
+        var thrcolor = new Array();
+        var fr = new Array();
+        var frcolor = new Array();
+        var fiv = new Array();
+        var fivcolor = new Array();
+        for(var i = 0;i< fday.length; i++)
+        {
+            if(fday[i] == "월") {
+                mon[parseInt(ftime[i]) - 1] = name[i];
+                moncolor[parseInt(ftime[i]) - 1] = color[i];
+            }
+            if(tday[i] == "월") {
+                mon[parseInt(ttime[i]) - 1] = name[i];
+                moncolor[parseInt(ttime[i]) - 1] = color[i];
+            }
+            if(fday[i] == "화") {
+                two[parseInt(ftime[i]) - 1] = name[i];
+                twocolor[parseInt(ftime[i]) - 1] = color[i];
+            }
+            if(tday[i] == "화") {
+                two[parseInt(ttime[i]) - 1] = name[i];
+                twocolor[parseInt(ttime[i]) - 1] = color[i];
+            }
+            if(fday[i] == "수") {
+                thr[parseInt(ftime[i]) - 1] = name[i];
+                thrcolor[parseInt(ftime[i]) - 1] = color[i];
+            }
+            if(tday[i] == "수") {
+                thr[parseInt(ttime[i]) - 1] = name[i];
+                thrcolor[parseInt(ttime[i]) - 1] = color[i];
+            }
+            if(fday[i] == "목") {
+                fr[parseInt(ftime[i]) - 1] = name[i];
+                frcolor[parseInt(ftime[i]) - 1] = color[i];
+            }
+            if(tday[i] == "목") {
+                fr[parseInt(ttime[i]) - 1] = name[i];
+                frcolor[parseInt(ttime[i]) - 1] = color[i];
+            }
+            if(fday[i] == "금") {
+                fiv[parseInt(ftime[i]) - 1] = name[i];
+                fivcolor[parseInt(ftime[i]) - 1] = color[i];
+            }
+            if(tday[i] == "금") {
+                fiv[parseInt(ttime[i]) - 1] = name[i];
+                fivcolor[parseInt(ttime[i]) - 1] = color[i];
+            }
+        }
+        console.log(mon);
+        console.log(two);
+        console.log(thr);
+        console.log(fr);
+        console.log(fiv);
+        %>
+        <tr>
+            <th style="background-color: gray">1교시</th>
+            <%if((mon[0] == mon[1]) && mon[0] != null){%>
+            <td style="background-color: <%=moncolor[0]%>" rowspan="2"><%=mon[0]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[0]%>"><%=mon[0]%></td>
+            <%}if((two[0] == two[1])&& two[0] != null){ %>
+            <td style="background-color: <%=twocolor[0]%>" rowspan="2"><%=two[0]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[0]%>"><%=two[0]%></td>
+            <%}if((thr[0] == thr[1])&& thr[0] != null){ %>
+            <td style="background-color: <%=thrcolor[0]%>" rowspan="2"><%=thr[0]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[0]%>"><%=thr[0]%></td>
+            <%}if((fr[0] == fr[1])&& fr[0] != null){ %>
+            <td style="background-color: <%=frcolor[0]%>" rowspan="2"><%=fr[0]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[0]%>"><%=fr[0]%></td>
+            <%}if((fiv[0] == fiv[1])&& fiv[0] != null){ %>
+            <td style="background-color: <%=fivcolor[0]%>" rowspan="2"><%=fiv[0]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[0]%>"><%=fiv[0]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">2교시</th>
+            <%if((mon[0] == mon[1]) && mon[1] != null ){%>
+            <% }else if((mon[1] == mon[2]) && mon[1] != null){%>
+            <td style="background-color: <%=moncolor[1]%>" rowspan="2"><%=mon[1]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[1]%>"><%=mon[1]%></td>
+            <%}%>
+            <%if((two[0] == two[1])&& two[1] != null){%>
+            <% }else if((two[1] == two[2])&& two[1] != null){%>
+            <td style="background-color: <%=twocolor[1]%>" rowspan="2"><%=two[1]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[1]%>"><%=two[1]%></td>
+            <%}%>
+            <%if((thr[0] == thr[1])&& thr[1] != null){%>
+            <% }else if((thr[1] == thr[2])&& thr[1] != null){%>
+            <td style="background-color: <%=thrcolor[1]%>" rowspan="2"><%=thr[1]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[1]%>"><%=thr[1]%></td>
+            <%}%>
+            <%if((fr[0] == fr[1]) && fr[1] != null){%>
+            <% }else if((fr[1] == fr[2]) && fr[1] != null){%>
+            <td style="background-color: <%=frcolor[1]%>" rowspan="2"><%=fr[1]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[1]%>"><%=fr[1]%></td>
+            <%}%>
+            <%if((fiv[0] == fiv[1])&& fiv[1] != null){%>
+            <% }else if((fiv[1] == fiv[2])&& fiv[1] != null){%>
+            <td style="background-color: <%=fivcolor[1]%>" rowspan="2"><%=fiv[1]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[1]%>"><%=fiv[1]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">3교시</th>
+            <%if((mon[1] == mon[2])&& mon[2] != null){%>
+            <% }else if((mon[2] == mon[3])&& mon[2] != null){%>
+            <td style="background-color: <%=moncolor[2]%>" rowspan="2"><%=mon[2]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[2]%>"><%=mon[2]%></td>
+            <%}%>
+            <%if((two[1] == two[2]) && two[2] != null){%>
+            <% }else if((two[2] == two[3])&& two[2] != null){%>
+            <td style="background-color: <%=twocolor[2]%>" rowspan="2"><%=two[2]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[2]%>"><%=two[2]%></td>
+            <%}%>
+            <%if((thr[1] == thr[2])&& thr[2] != null){%>
+            <% }else if((thr[2] == thr[3])&& thr[2] != null){%>
+            <td style="background-color: <%=thrcolor[2]%>" rowspan="2"><%=thr[2]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[2]%>"><%=thr[2]%></td>
+            <%}%>
+            <%if((fr[1] == fr[2])&& fr[2] != null){%>
+            <% }else if((fr[2] == fr[3])&& fr[2] != null){%>
+            <td style="background-color: <%=frcolor[2]%>" rowspan="2"><%=fr[2]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[2]%>"><%=fr[2]%></td>
+            <%}%>
+            <%if((fiv[1] == fiv[2])&& fiv[2] != null){%>
+            <% }else if((fiv[2] == fiv[3])&& fiv[2] != null){%>
+            <td style="background-color: <%=fivcolor[2]%>" rowspan="2"><%=fiv[2]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[2]%>"><%=fiv[2]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">4교시</th>
+            <%if((mon[2] == mon[3])&& mon[3] != null){%>
+            <% }else if((mon[3] == mon[4])&& mon[3] != null){%>
+            <td style="background-color: <%=moncolor[3]%>" rowspan="2"><%=mon[3]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[3]%>"><%=mon[3]%></td>
+            <%}%>
+            <%if((two[2] == two[3]) && two[3] != null){%>
+            <% }else if((two[3] == two[4]) && two[3] != null){%>
+            <td style="background-color: <%=twocolor[3]%>" rowspan="2"><%=two[3]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[3]%>"><%=two[3]%></td>
+            <%}%>
+            <%if((thr[2] == thr[3]) && thr[3] != null){%>
+            <% }else if((thr[3] == thr[4])&& thr[3] != null){%>
+            <td style="background-color: <%=thrcolor[3]%>" rowspan="2"><%=thr[3]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[3]%>"><%=thr[3]%></td>
+            <%}%>
+            <%if((fr[2] == fr[3]) && fr[3] != null){%>
+            <% }else if((fr[3] == fr[4])&& fr[3] != null){%>
+            <td style="background-color: <%=frcolor[3]%>" rowspan="2"><%=fr[3]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[3]%>"><%=fr[3]%></td>
+            <%}%>
+            <%if((fiv[2] == fiv[3])&& fiv[3] != null){%>
+            <% }else if((fiv[3] == fiv[4])&& fiv[3] != null){%>
+            <td style="background-color: <%=fivcolor[3]%>" rowspan="2"><%=fiv[3]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[3]%>"><%=fiv[3]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">5교시</th>
+            <%if((mon[3] == mon[4]) && mon[4] != null){%>
+            <% }else if((mon[4] == mon[5])&& mon[4] != null){%>
+            <td style="background-color: <%=moncolor[4]%>" rowspan="2"><%=mon[4]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[4]%>"><%=mon[4]%></td>
+            <%}%>
+            <%if((two[3] == two[4])&& two[4] != null){%>
+            <% }else if((two[4] == two[5])&& two[4] != null){%>
+            <td style="background-color: <%=twocolor[4]%>" rowspan="2"><%=two[4]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[4]%>"><%=two[4]%></td>
+            <%}%>
+            <%if((thr[3] == thr[4])&& thr[4] != null){%>
+            <% }else if((thr[4] == thr[5]) && thr[4] != null){%>
+            <td style="background-color: <%=thrcolor[4]%>" rowspan="2"><%=thr[4]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[4]%>"><%=thr[4]%></td>
+            <%}%>
+            <%if((fr[3] == fr[4])&& fr[4] != null){%>
+            <% }else if((fr[4] == fr[5])&& fr[4] != null){%>
+            <td style="background-color: <%=frcolor[4]%>" rowspan="2"><%=fr[4]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[4]%>"><%=fr[4]%></td>
+            <%}%>
+            <%if((fiv[3] == fiv[4])&& fiv[4] != null){%>
+            <% }else if((fiv[4] == fiv[5])&& fiv[4] != null){%>
+            <td style="background-color: <%=fivcolor[4]%>" rowspan="2"><%=fiv[4]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[4]%>"><%=fiv[4]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">6교시</th>
+            <%if((mon[4] == mon[5])&& mon[5] != null){%>
+            <% }else if((mon[5] == mon[6])&& mon[5] != null){%>
+            <td style="background-color: <%=moncolor[5]%>" rowspan="2"><%=mon[5]%></td>
+            <% }else {%>
+            <td style="background-color: <%=moncolor[5]%>"><%=mon[5]%></td>
+            <%}%>
+            <%if((two[4] == two[5])&& two[5] != null){%>
+            <% }else if((two[5] == two[6])&& two[5] != null){%>
+            <td style="background-color: <%=twocolor[5]%>" rowspan="2"><%=two[5]%></td>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[5]%>"><%=two[5]%></td>
+            <%}%>
+            <%if((thr[4] == thr[5]) && thr[5] != null){%>
+            <% }else if((thr[5] == thr[6])&& thr[5] != null){%>
+            <td style="background-color: <%=thrcolor[5]%>" rowspan="2"><%=thr[5]%></td>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[5]%>"><%=thr[5]%></td>
+            <%}%>
+            <%if((fr[4] == fr[5]) && fr[5] != null){%>
+            <% }else if((fr[5] == fr[6])&& fr[5] != null){%>
+            <td style="background-color: <%=frcolor[5]%>" rowspan="2"><%=fr[5]%></td>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[5]%>"><%=fr[5]%></td>
+            <%}%>
+            <%if((fiv[4] == fiv[5])&& fiv[5] != null){%>
+            <% }else if((fiv[5] == fiv[6])&& fiv[5] != null){%>
+            <td style="background-color: <%=fivcolor[5]%>" rowspan="2"><%=fiv[5]%></td>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[5]%>"><%=fiv[5]%></td>
+            <%}%>
+        </tr>
+        <tr>
+            <th style="background-color: gray">7교시</th>
+            <%if((mon[5] == mon[6])&& mon[6] != null){%>
+            <%} else {%>
+            <td style="background-color: <%=moncolor[6]%>"><%=mon[6]%></td>
+            <%}%>
+            <%if((two[5] == two[6])&& two[6] != null){%>
+            <% }else {%>
+            <td style="background-color: <%=twocolor[6]%>"><%=two[6]%></td>
+            <%}%>
+            <%if((thr[5] == thr[6]) && thr[6] != null){%>
+            <% }else {%>
+            <td style="background-color: <%=thrcolor[6]%>"><%=thr[6]%></td>
+            <%}%>
+            <%if((fr[5] == fr[6]) && fr[6] != null){%>
+            <% }else {%>
+            <td style="background-color: <%=frcolor[6]%>"><%=fr[6]%></td>
+            <%}%>
+            <%if((fiv[5] == fiv[6])&& fiv[6] != null){%>
+            <% }else {%>
+            <td style="background-color: <%=fivcolor[6]%>"><%=fiv[6]%></td>
+            <%}%>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </body>
 </html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<head>
+    <meta charset='utf-8'>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <script src="/javascript/jquery-3.5.1.min.js"></script>
+    <style>
+        .ratio{padding-top:20px}
+        .ratio li{float: left;position:relative;width:100px;height:300px;margin-right:10px;list-style:none}
+        .ratio div{position:absolute;left:0;bottom:0;width:100%;background: yellowgreen repeat;font-size:0}
+        .ratio em{position:absolute;top:-20px;width:100%;font-size:12px;font-weight:bold;text-align:center}
+        .ratio em1{position:absolute;bottom:-20px;width:100%;font-size:12px;font-weight:bold;text-align:center;}
+    </style>
+    <style>
+        body{
+            margin: 0;
+        }
+        .container {
+            width: 100vw;
+            height: 100vh;
+            background: #bdb9c5;
+        }
+    </style>
+
+</head>
+
+<br>
+<header>
+    <div>
+        <div>
+            <a href="/login/main/<%= sid %>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
+            <br></br>
+        </div>
+        <div>
+
+            <a href="/login/mypage/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
+            <a href="/login/register/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
+            <a href="/login/drop/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
+            <a href="/login/search/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
+            <a href="/login/simul/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
+        </div>
+    </div>
+
+
+</header>
+<body>
+
+
+
+
+<br>
+<%
+var oneItem = rows;
+%>
+
+<br></br><br></br><br></br>
+<span style="font-weight: bold;font-size: 30px">신상 정보조회</span>
+<br></br>
+<div class="table-responsive-sm">
+<table class="table table-bordered">
+    <colgroup>
+        <col width="20%">
+        <col width="80%">
+    </colgroup>
+
+    <tbody>
+    <tr>
+        <th scope="row" style="background-color: silver">이름</th> <td><%= oneItem.sname %></td>
+    </tr>
+    <tr>
+        <th scope="row" style="background-color: silver">학번</th><td><%= oneItem.student_id %></td>
+    </tr>
+    <tr>
+        <%
+        if(oneItem.gender=="male")
+            var sex="남"
+        else
+            var sex="여"
+        %>
+        <th scope="row" style="background-color: silver">성별</th><td><%= sex %></td>
+    </tr>
+    <tr>
+        <th scope="row" style="background-color: silver">학년</th><td><%= oneItem.class %></td>
+    </tr>
+    <tr>
+        <th scope="row" style="background-color: silver" >전공</th><td><%= oneItem.major %></td>
+    </tr>
+    </tbody>
+</table>
+</div>
+<br></br><br></br>
+
+<span style="font-weight: bold; font-size: 30px">성적 조회</span>
+<br></br>
+<span style="font-weight: bold;">***전체 성적 조회***</span>
+<br></br>
+
+<%
+var comp=[["1","1"],["1","2"],["2","1"],["2","2"],["3","1"],["3","2"],["4","1"],["4","2"]];
+var temp=[0,0,0,0,0,0,0,0];
+var count=0;
+for (var k=0;k<courses.length;k++){
+    var ro=courses[k];
+
+    var sy=[ro.s_year,ro.s_semester];
+    for(var m=0;m<8;m++){
+        if(sy[0][0] == comp[m][0][0] && sy[0][1] == comp[m][0][1] && temp[m]==0) {
+            temp[m] = temp[m] + 1;
+        }
+    }
+}
+for(var i =0;i<8;i++){
+    count=count+temp[i];
+}
+
+%>
+<table class= "table table-hover">
+
+    <thead class="thead-light">
+    <tr>
+        <th>학기</th>
+        <th>취득학점</th>
+        <th>전공평점</th>
+        <th>평균평점</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <%
+
+    var total_hours;
+    var total_major;
+    var total_grade;
+    var counts;
+    var countss;
+    var int_hours;
+    var int_grade;
+    var average_grade;
+    var average_major;
+    var check;
+    var com_hour=["-","-","-","-","-","-","-","-"];
+    var com_major=["-","-","-","-","-","-","-","-"];
+    var com_grade=["-","-","-","-","-","-","-","-"];
+
+    for(var i=0;i<8;i++){
+        counts = 0;
+        countss = 0;
+        total_hours = 0;
+        total_major = 0;
+        total_grade = 0;
+
+        if(temp[i]==1) {
+
+            check=0;
+            var y1 = comp[i][0];
+            var s1 = comp[i][1];
+
+            for (var t = 0; t < courses.length; t++) {
+                var xxItem = courses[t];
+                if (xxItem.s_semester == s1 && xxItem.s_year == y1) {
+                    counts++;
+                }
+            }
+
+
+            for (var j = 0; j < courses.length; j++) {
+                var xItem = courses[j];
+                if (xItem.s_semester == s1 && xItem.s_year == y1) {
+                    int_hours = Number(xItem.credit_hours);
+
+                    if (xItem.grade == "A+") {
+                        int_grade = 4.5;
+                    }
+                    else if (xItem.grade == "A0") {
+                        int_grade = 4.0;
+                    }
+                    else if (xItem.grade == "B+") {
+                        int_grade = 3.5;
+                    }
+                    else if (xItem.grade == "B0") {
+                        int_grade = 3.0;
+                    }
+                    else if (xItem.grade == "C+") {
+                        int_grade = 2.5;
+                    }
+                    else if (xItem.grade == "C0") {
+                        int_grade = 2.0;
+                    }
+                    else if (xItem.grade == "D+") {
+                        int_grade = 1.5;
+                    }
+                    else if (xItem.grade == "D0") {
+                        int_grade = 1.0;
+                    }
+                    else if (xItem.grade == "F") {
+                        int_grade = 0.0;
+                    }
+                    else {
+                        int_grade = "-";
+                        check=1;
+                    }
+
+                    if(check==0)
+                        total_hours = total_hours + int_hours;
+                    else
+                        total_hours="-";
+
+                    if(int_grade!="-") {
+                        total_grade = total_grade + int_grade;
+                    }
+                    else{
+                        total_grade="-";
+                    }
+
+                    if (xItem.department == oneItem.major) {
+                        countss = countss + 1;
+                        if(int_grade!="-") {
+                            total_major = total_major + int_grade;
+                        }
+                        else{
+                            total_major="-";
+                        }
+                    }
+
+                }
+
+
+            }
+            if(counts==0){
+                average_grade="-";
+            }
+            else{
+
+                if(total_grade!="-")
+                    average_grade = (total_grade / counts);
+                else
+                    average_grade="-";
+            }
+            if(countss==0){
+                average_major="-";
+            }
+            else{
+                if(total_major!="-")
+                    average_major = (total_major / countss);
+                else
+                    average_major="-";
+            }
+
+        %>
+    <tr>
+        <td><%=y1%>학년 <%=s1%>학기</td>
+        <td><%=total_hours%></td>
+        <%
+        if(average_major!="-"){
+        %>
+            <td><%=average_major.toFixed(2)%></td>
+        <%
+        }
+        else{
+        %>
+            <td><%=average_major%></td>
+        <%
+        }
+        if(average_grade!="-"){
+        %>
+        <td><%=average_grade.toFixed(2)%></td>
+        <%
+        }
+        else{
+        %>
+        <td><%=average_grade%></td>
+        <%
+        }
+        %>
+    </tr>
+    <%
+        com_hour[i]=total_hours;
+        com_grade[i]=average_grade;
+        com_major[i]=average_major;
+    }
+
+    }
+    var check_grade=0;
+    var check_major=0;
+    for(var h=0;h<8;h++){
+        if(com_grade[h]!="-")
+            check_grade++;
+        if(com_major[h]!="-")
+            check_major++;
+    }
+    var total_gg=0;
+    var total_hh=0;
+    var total_mm=0;
+    for(var h=0;h<8;h++){
+        if(com_grade[h]!="-")
+            total_gg=total_gg+com_grade[h];
+        if(com_hour[h]!="-")
+            total_hh=total_hh+com_hour[h];
+        if(com_major[h]!="-")
+            total_mm=total_mm+com_major[h];
+    }
+    total_gg=total_gg/check_grade;
+    total_mm=total_mm/check_major;
+ %>
+
+
+    </tbody>
+    <thead class="thead-light">
+    <tr>
+        <th>전체학기</th>
+        <th><%=total_hh%></th>
+        <th><%=total_mm.toFixed(2)%>/4.50</th>
+        <th><%=total_gg.toFixed(2)%>/4.50</th>
+    </tr>
+    </thead>
+
+</table>
+<br></br><br></br>
+<span style="font-weight: bold;">***성적 추이 그래프***</span>
+<br></br>
+
+<ul class="ratio">
+    <%
+    for(var i=0;i<8;i++){
+    if(com_grade[i]!="-"){
+        var ccc=comp[i][0];
+        var sss=comp[i][1];
+        var result=com_grade[i]/4.5*100;
+    %>
+
+    <li><em1 ><%=ccc%>학년 <%=sss%>학기</em1><div style="height: <%=result%>%; background-color: cadetblue"><em ><%=com_grade[i].toFixed(2)%></em></div></li>
+
+    <%
+    }
+    }
+    %>
+</ul>
+
+
+
+<br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+<span style="font-weight: bold;">***학기별 성적***</span>
+<br></br>
+<%
+
+for(var idx=7;idx>=0;idx--){
+if(temp[idx]==1){
+    var y=comp[idx][0];
+    var s=comp[idx][1];
+%>
+<table class= "table table-hover">
+    <colgroup>
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+        <col width="20%">
+    </colgroup>
+    <thead class="thead-light">
+    <tr>
+        <th colspan="5" style="text-align: center"><%=y%>학년 <%=s%>학기</th>
+    </tr>
+    <tr>
+        <th>과목명</th>
+        <th>개설학과</td>
+        <th>학점</th>
+        <th>성적</th>
+        <th>재수강여부</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <%
+    for(var i=0;i<courses.length;i++){
+        var twoItem=courses[i];
+
+    if(twoItem.s_semester==s && twoItem.s_year==y){
+
+    %>
+
+    <tr>
+        <td><%=twoItem.cname%></td>
+        <td><%=twoItem.department%></td>
+        <td><%=twoItem.credit_hours%></td>
+        <%
+        if(twoItem.grade!=null){
+        %>
+        <td><%=twoItem.grade%></td>
+        <%
+        }
+        else{
+        %>
+            <td style="color: silver">미등록 상태</td>
+        <%
+        }
+        %>
+        <%
+        if(twoItem.retake==1){
+        %>
+            <td style="color: red">재수강</td>
+        <%
+        }
+        else{
+        %>
+            <td></td>
+        <%
+        }
+        %>
+    </tr>
+
+    <%
+    }
+    }
+    %>
+    </tbody>
+</table>
+<br></br><br></br>
+<%
+}
+}
+%>
+
+
+
+</body>
+</html>
