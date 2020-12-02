@@ -49,220 +49,220 @@
 
 <body>
 <div class="container">
-<br>
-<div>
-    <span style="font-weight: bold;font-size: 30px">시뮬레이션</span>
-</div>
-<br> <br>
-<div style = "width: 50%; float: left; overflow: scroll; overflow-x: hidden; height: 500px">
-    <h1>과목현황</h1>
-    <table class="table table-hover" id="yes-deadline" style="width: 100%; display: table;">
+    <br>
+    <div>
+        <span style="font-weight: bold;font-size: 30px">시뮬레이션</span>
+    </div>
+    <br> <br>
+    <div style = "width: 50%; float: left; overflow: scroll; overflow-x: hidden; height: 500px">
+        <h1>과목현황</h1>
+        <table class="table table-hover" id="yes-deadline" style="width: 100%; display: table;">
+            <colgroup>
+                <col width="40%">
+                <col width="20%">
+                <col width="15%">
+                <col width="15%">
+                <col width="10%">
+            </colgroup>
+            <thead>
+            <tr style="border-bottom: 1px solid #dce3eb; font-weight: bold; height: 30px">
+                <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">과목명</td>
+                <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">담당교수</td>
+                <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">학점</td>
+                <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">강의시간</td>
+                <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">여석</td>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <%
+            for(var i=0; i<rows.length; i++){
+                var oneItem = rows[i];
+            %>
+            <tr style="border-bottom: 1px solid #dce3eb; height: 30px;cursor: pointer;" class = "checkTr">
+                <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.cname%></td>
+                <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.instructor%></td>
+                <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.credit_hours%></td>
+                <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.ltime%></td>
+                <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.total_number%></td>
+            </tr>
+            <%
+            }
+            %>
+            </tbody>
+        </table>
+    </div>
+
+    <h1>등록현황</h1>
+    <form id="register" action="/login/simul/<%=sid%>" method="post">
+        <table class="table-hover" id = "table2" border="1" width = "50%" style="text-align: center; border-style: solid; border-collapse: collapse;">
+            <colgroup>
+                <col width="25%">
+                <col width="25%">
+                <col width="25%">
+                <col width="25%">
+            </colgroup>
+            <tr style="background-color: lightgray; font-size: 1.4em;">
+                <td>과목명</td>
+                <td>담당교수</td>
+                <td>학점</td>
+                <td>강의시간</td>
+            </tr>
+        </table>
+    </form>
+
+    <div style = "clear:both"></div>
+
+    <br><br>
+
+    <h1 style = "text-align: center">수강과목 추가</h1>
+    <table id = "table3" border="1" width = "50%"  style="margin:auto; text-align: center; border-style: solid; border-collapse: collapse;" >
         <colgroup>
-            <col width="40%">
-            <col width="20%">
-            <col width="15%">
-            <col width="15%">
+            <col width="30%">
+            <col width="30%">
             <col width="10%">
-        </colgroup>
-        <thead>
-        <tr style="border-bottom: 1px solid #dce3eb; font-weight: bold; height: 30px">
-            <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">과목명</td>
-            <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">담당교수</td>
-            <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">학점</td>
-            <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">강의시간</td>
-            <td style="font-weight: bold;color: black;font-size: 1.6em;text-decoration:none;">여석</td>
-        </tr>
-        </thead>
-
-        <tbody>
-
-        <%
-        for(var i=0; i<rows.length; i++){
-            var oneItem = rows[i];
-        %>
-        <tr style="border-bottom: 1px solid #dce3eb; height: 30px;cursor: pointer;" class = "checkTr">
-            <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.cname%></td>
-            <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.instructor%></td>
-            <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.credit_hours%></td>
-            <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.ltime%></td>
-            <td style="color: black;font-size: 1.4em;text-decoration:none;"><%=oneItem.total_number%></td>
-        </tr>
-        <%
-        }
-        %>
-        </tbody>
-    </table>
-</div>
-
-<h1>등록현황</h1>
-<form id="register" action="/login/simul/<%=sid%>" method="post">
-    <table class="table-hover" id = "table2" border="1" width = "50%" style="text-align: center; border-style: solid; border-collapse: collapse;">
-        <colgroup>
-            <col width="25%">
-            <col width="25%">
-            <col width="25%">
-            <col width="25%">
+            <col width="15%">
+            <col width="15%">
         </colgroup>
         <tr style="background-color: lightgray; font-size: 1.4em;">
             <td>과목명</td>
             <td>담당교수</td>
             <td>학점</td>
             <td>강의시간</td>
+            <td></td>
+        </tr>
+        <tr style = "font-size: 1.4em;">
+            <td><span id = "course_name"></span></td>
+            <td><span id = "instructor"></span></td>
+            <td><span id = "credit_hours"></span></td>
+            <td><span id = "lecture_time"></span></td>
+            <td><button style="width: 100%" class="btn btn-secondary" type="submit"  onclick='addRow("table2")'>등록</button></td>
         </tr>
     </table>
-</form>
+    <div style = "clear:both"></div>
+    <input type="hidden" id="student_id" value="<%=sid%>"/>
 
-<div style = "clear:both"></div>
+    <script>
+        $(".checkTr").click(function(){
+            var tr = $(this);
+            var td = tr.children();
+            var cname = td.eq(0).text();
+            var instructor =td.eq(1).text();
+            var credit_hours = td.eq(2).text();
+            var lecture_time = td.eq(3).text();
 
-<br><br>
-
-<h1 style = "text-align: center">수강과목 추가</h1>
-<table id = "table3" border="1" width = "50%"  style="margin:auto; text-align: center; border-style: solid; border-collapse: collapse;" >
-    <colgroup>
-        <col width="30%">
-        <col width="30%">
-        <col width="10%">
-        <col width="15%">
-        <col width="15%">
-    </colgroup>
-    <tr style="background-color: lightgray; font-size: 1.4em;">
-        <td>과목명</td>
-        <td>담당교수</td>
-        <td>학점</td>
-        <td>강의시간</td>
-        <td></td>
-    </tr>
-    <tr style = "font-size: 1.4em;">
-        <td><span id = "course_name"></span></td>
-        <td><span id = "instructor"></span></td>
-        <td><span id = "credit_hours"></span></td>
-        <td><span id = "lecture_time"></span></td>
-        <td><button style = "width: 100%; font-size: 20px;" type="submit" onclick='addRow("table2")'>등록</button></td>
-    </tr>
-</table>
-<div style = "clear:both"></div>
-<input type="hidden" id="student_id" value="<%=sid%>"/>
-
-<script>
-    $(".checkTr").click(function(){
-        var tr = $(this);
-        var td = tr.children();
-        var cname = td.eq(0).text();
-        var instructor =td.eq(1).text();
-        var credit_hours = td.eq(2).text();
-        var lecture_time = td.eq(3).text();
-
-        console.log("과목 이름 : " + JSON.stringify(cname));
-        $("#course_name").html(cname);
-        $("#instructor").html(instructor);
-        $("#credit_hours").html(credit_hours);
-        $("#lecture_time").html(lecture_time);
-        return true;
-    });
-
-    $(document).ready(function(){
-        $(document).on("click", ".newTr", function(){
-            var result = confirm("정말 수강을 삭제하시겠습니까?");
-            if(result){
-                var tr = $(this);
-
-                tr.remove();
-            }
+            console.log("과목 이름 : " + JSON.stringify(cname));
+            $("#course_name").html(cname);
+            $("#instructor").html(instructor);
+            $("#credit_hours").html(credit_hours);
+            $("#lecture_time").html(lecture_time);
+            return true;
         });
-    })
 
-    function addRow(tableid) {
-        var sid = document.getElementById("student_id").value;
-        console.log(sid);
-        var sendtable = document.getElementById("table3");
-        var trs = sendtable.getElementsByTagName("tr");
-        var tr = trs[1];
-        var td = tr.getElementsByTagName("td");
+        $(document).ready(function(){
+            $(document).on("click", ".newTr", function(){
+                var result = confirm("정말 수강을 삭제하시겠습니까?");
+                if(result){
+                    var tr = $(this);
 
-        var cname = td[0].textContent;
-        var instructor =td[1].textContent;
-        var credit_hours = td[2].textContent;
-        var lecture_time = td[3].textContent;
-        var total_credit_hours = 0;
-
-        var table = document.getElementById(tableid);
-        var rowlen = table.rows.length;
-        if(rowlen >=2){
-            for (var j = 0; j < rowlen - 1; j++) {
-                temptrs = table.getElementsByTagName("tr");
-                temptr = temptrs[j];
-                temptd = temptr.getElementsByTagName("td");
-                if(temptd[0].innerText == "과목명") {
-                    total_credit_hours += Number(credit_hours);
+                    tr.remove();
                 }
-                if(temptd[0].innerText != "과목명"){
-                    console.log("number: " + temptd[2]);
-                    total_credit_hours += Number(temptd[2].innerText);
+            });
+        })
+
+        function addRow(tableid) {
+            var sid = document.getElementById("student_id").value;
+            console.log(sid);
+            var sendtable = document.getElementById("table3");
+            var trs = sendtable.getElementsByTagName("tr");
+            var tr = trs[1];
+            var td = tr.getElementsByTagName("td");
+
+            var cname = td[0].textContent;
+            var instructor =td[1].textContent;
+            var credit_hours = td[2].textContent;
+            var lecture_time = td[3].textContent;
+            var total_credit_hours = 0;
+
+            var table = document.getElementById(tableid);
+            var rowlen = table.rows.length;
+            if(rowlen >=2){
+                for (var j = 0; j < rowlen - 1; j++) {
+                    temptrs = table.getElementsByTagName("tr");
+                    temptr = temptrs[j];
+                    temptd = temptr.getElementsByTagName("td");
+                    if(temptd[0].innerText == "과목명") {
+                        total_credit_hours += Number(credit_hours);
+                    }
+                    if(temptd[0].innerText != "과목명"){
+                        console.log("number: " + temptd[2]);
+                        total_credit_hours += Number(temptd[2].innerText);
+                    }
+                    if (temptd[0].innerText == cname) {
+                        alert("이미 등록되어있는 과목입니다.");
+                        temptrs[rowlen-1].remove();
+                        return false;
+                    } // --> 실제 코드입니다. 최대 이수 학점 테스트 시 주석처리
+                    var fday = lecture_time.substr(0,2);
+                    var sday = lecture_time.substr(3,2);
+                    if(sday.length == 1){
+                        var day = fday.substr(0,1);
+                        var ltime = sday;
+                        sday = day+ltime;
+                    }
+                    var clecture_time = temptd[3].innerText;
+                    var cfday = clecture_time.substr(0,2);
+                    var csday = clecture_time.substr(3,2);
+                    if(csday.length == 1){
+                        var cday = cfday.substr(0,1);
+                        var cltime = csday;
+                        csday = cday+cltime;
+                    }
+                    if(fday == cfday || fday == csday || sday == cfday || sday == csday){
+                        alert("강의 시간이 겹치는 과목이 있습니다.");
+                        temptrs[rowlen-1].remove();
+                        return false;
+                    }
+
+                    if(j == rowlen - 2)
+                        break;
                 }
-                if (temptd[0].innerText == cname) {
-                    alert("이미 등록되어있는 과목입니다.");
+                console.log("total: " + total_credit_hours);
+                if(total_credit_hours > 24){
+                    alert("수강신청은 최대 24학점까지 가능합니다.");
                     temptrs[rowlen-1].remove();
                     return false;
-                } // --> 실제 코드입니다. 최대 이수 학점 테스트 시 주석처리
-                var fday = lecture_time.substr(0,2);
-                var sday = lecture_time.substr(3,2);
-                if(sday.length == 1){
-                    var day = fday.substr(0,1);
-                    var ltime = sday;
-                    sday = day+ltime;
                 }
-                var clecture_time = temptd[3].innerText;
-                var cfday = clecture_time.substr(0,2);
-                var csday = clecture_time.substr(3,2);
-                if(csday.length == 1){
-                    var cday = cfday.substr(0,1);
-                    var cltime = csday;
-                    csday = cday+cltime;
-                }
-                if(fday == cfday || fday == csday || sday == cfday || sday == csday){
-                    alert("강의 시간이 겹치는 과목이 있습니다.");
-                    temptrs[rowlen-1].remove();
-                    return false;
-                }
+            }
+            $.ajax({
+                url:'/login/simulcheck/' + sid,
+                type:'post',
+                data:{"sid":sid, "cname":cname, "instructor":instructor},
+                success: function(data) {
+                    var sign = JSON.parse(JSON.stringify(data));
+                    sign = sign.data;
+                    console.log(sign);
+                    if(sign == "not okay") {
+                        alert("재수강이 불가한 과목입니다");
+                    } else if (sign == "not okay by prenum"){
+                        alert("선이수 과목을 먼저 수강하시기 바랍니다.");
+                    } else{
+                        var row = table.insertRow(rowlen);   // HTML에서의 권장 표준 문법
+                        row.setAttribute("class", "newTr");
 
-                if(j == rowlen - 2)
-                    break;
-            }
-            console.log("total: " + total_credit_hours);
-            if(total_credit_hours > 24){
-                alert("수강신청은 최대 24학점까지 가능합니다.");
-                temptrs[rowlen-1].remove();
-                return false;
-            }
+                        row.insertCell(0).innerHTML = cname;
+                        row.insertCell(1).innerHTML = instructor;
+                        row.insertCell(2).innerHTML = credit_hours;
+                        row.insertCell(3).innerHTML = lecture_time;
+                    }
+                },
+                error:function (data) {
+                    console.log('error');
+                }
+            })   //ajax
         }
-        $.ajax({
-            url:'/login/simulcheck/' + sid,
-            type:'post',
-            data:{"sid":sid, "cname":cname, "instructor":instructor},
-            success: function(data) {
-                var sign = JSON.parse(JSON.stringify(data));
-                sign = sign.data;
-                console.log(sign);
-                if(sign == "not okay") {
-                    alert("재수강이 불가한 과목입니다");
-                } else if (sign == "not okay by prenum"){
-                    alert("선이수 과목을 먼저 수강하시기 바랍니다.");
-                } else{
-                    var row = table.insertRow(rowlen);   // HTML에서의 권장 표준 문법
-                    row.setAttribute("class", "newTr");
-
-                    row.insertCell(0).innerHTML = cname;
-                    row.insertCell(1).innerHTML = instructor;
-                    row.insertCell(2).innerHTML = credit_hours;
-                    row.insertCell(3).innerHTML = lecture_time;
-                }
-            },
-            error:function (data) {
-                console.log('error');
-            }
-        })   //ajax
-    }
-</script>
+    </script>
 </div>
 </body>
 </html>

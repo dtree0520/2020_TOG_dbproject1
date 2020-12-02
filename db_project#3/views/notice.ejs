@@ -9,7 +9,7 @@
         .container {
             margin-top: 4%;
             width:100vw;
-            height: 100%;
+            height: 80vh;
             background: white;
         }
         body {
@@ -67,37 +67,37 @@
 
 <body>
 <div class="container">
-<br></br><br></br><br></br>
-<table class="tg" width="100%">
-    <thead>
-    <tr>
-        <th class="tg-05m9" colspan="5"><%=title%></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td class="tg-4688" colspan="5"><%=row.title%></td>
-    </tr>
-    <tr>
-        <td class="tg-h2xt" colspan="2"><%=row.writer%></td>
-        <td class="tg-l6li" colspan="2"><%=row.wdate%></td>
-        <td class="tg-l6li"><%=row.hit%></td>
-    </tr>
-    <tr>
-        <td class="tg-2ghq" colspan="5"><%=row.content%></td>
-    </tr>
-    <tr>
-        <td class="tg-y09a" colspan="5">
-            <input type="button" value="목록" onclick = "move_page()"/>
-            <script type = "text/javascript">
-                function move_page() {
-                    location.href = "/login/<%=sid%>/noticelist/<%=row.section_id%>";
-                }
-            </script>
-        </td>
-    </tr>
-    </tbody>
-</table>
+    <br></br><br></br><br></br>
+    <table class="table table-bordered" width="100%">
+        <thead class="thead-light">
+        <tr>
+            <th class="tg-05m9" colspan="5" style="text-align: center"><%=title%></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class="tg-4688" colspan="5"><%=row.title%></td>
+        </tr>
+        <tr>
+            <td class="tg-h2xt" colspan="2" style="text-align: center"><%=row.writer%></td>
+            <td class="tg-l6li" colspan="2"><%=row.wdate%></td>
+            <td class="tg-l6li" style="text-align: center"><%=row.hit%></td>
+        </tr>
+        <tr>
+            <td class="tg-2ghq" colspan="5"><%=row.content%></td>
+        </tr>
+        <tr>
+            <td class="tg-y09a" colspan="5">
+                <input type="button" style="float: right" class="btn btn-secondary" value="목록" onclick = "move_page()"/>
+                <script type = "text/javascript">
+                    function move_page() {
+                        location.href = "/login/<%=sid%>/noticelist/<%=row.section_id%>";
+                    }
+                </script>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 </body>
 </html>

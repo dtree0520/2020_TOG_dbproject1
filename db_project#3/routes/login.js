@@ -61,7 +61,6 @@ router.post('/sign',function(req, res, next) {
                     var sqlForInsertBoard = "insert into student(sname, student_id, passwd, class, major, gender) values(?,?,?,?,?,?)"
                     connection.query(sqlForInsertBoard, datas, function (err, rows) {
                         if (err) console.error("err : " + err);
-                        console.log("rows : " + JSON.stringify(rows));
                         res.redirect('/login');
                     });
                 });
@@ -75,11 +74,14 @@ router.get('/main/:student_id', function(req,res,next) {
     var date = new Date();
     var month = date.getMonth() + 1;
     //var month=7;
+    /* 실제코드입니다.
     if ((1 <= month && month <= 2) || (month >= 8)) {
         var sem = 2;
     } else {
         var sem = 1;
     }
+    */
+     var sem=1;
 
     pool.getConnection(function (err, connection) {
 
@@ -87,7 +89,6 @@ router.get('/main/:student_id', function(req,res,next) {
 
         connection.query(sqlsearchclass, [student_id], function (err, classes) {
             if (err) console.error("err : " + err);
-            console.log("학년:" + JSON.stringify(classes));
             var classresult = JSON.parse(JSON.stringify(classes));
             var year = classresult[0].class;
 
@@ -96,14 +97,10 @@ router.get('/main/:student_id', function(req,res,next) {
             connection.query(sqlForSelectRow, [student_id, sem, year], function (err, rows) {
 
                 if (err) console.error("err : " + err);
-                console.log(month, sem, year);
-                console.log("듣는 수업 : ", rows);
-                console.log("수업 갯수 : ", rows.length);
                 pool.getConnection(function (err, connection) {
                     var sqlForSelectList = "select c.cname, s.ltime from course as c, section as s where c.cnumber = s.cnumber and s.section_id IN(select si.section_id from student_info as si where si.s_semester = ? and si.s_year = ? and si.student_id = ?);";
                     connection.query(sqlForSelectList, [sem, year, student_id], function (err, results) {
                         if (err) console.error("err : " + err);
-                        console.log("results : " + JSON.stringify(results));
                         res.render('main', {sid: student_id, rows: rows, results: results, year: year, sem: sem});
                         connection.release();
                     });
@@ -119,16 +116,13 @@ router.get('/mypage/:sid',function (req,res,next)
     pool.getConnection(function (err, connection)
     {
         var sqlsearchstudent="SELECT sname,student_id,class,major,gender from student where student_id=?;"
-        var sqlsearchcourse="SELECT student_info.s_semester,student_info.s_year, course.cname, course.department, course.credit_hours,student_info.grade,student_info.retake From section,student_info,course where course.cnumber in (SELECT cnumber From section,student_info where student_info.student_id=? and section.section_id=student_info.section_id) and section.cnumber=course.cnumber and student_info.student_id=? and section.section_id=student_info.section_id;"
+        var sqlsearchcourse="SELECT student_info.s_semester,student_info.s_year, course.cname, course.department, course.credit_hours,student_info.grade From section,student_info,course where course.cnumber in (SELECT cnumber From section,student_info where student_info.student_id=? and section.section_id=student_info.section_id) and section.cnumber=course.cnumber and student_info.student_id=? and section.section_id=student_info.section_id;"
         connection.query(sqlsearchcourse,[sid,sid], function (err, courses){
             if (err) console.error(err);
-            //console.log(courses.length);
 
             connection.query(sqlsearchstudent,[sid], function (err, rows) {
                 if (err) console.error(err);
                 res.render('mypage', {sid: sid, rows: rows[0],courses: courses});
-                //console.log(rows[0]);
-                //console.log(courses);
                 connection.release();
             });
         });
@@ -142,12 +136,10 @@ router.get('/mypage/:sid',function (req,res,next)
 router.get('/:sid/noticelist/:section_id', function (req,res,next){
     var sid = req.params.sid;
     var sect_id = req.params.section_id;
-    console.log(sect_id);
     pool.getConnection(function (err, connection){
         var sqlForSelectList =  "SELECT idx, title, files, writer, wdate, hit FROM SECTION_BOARD WHERE section_id = ? ORDER BY wdate";
         connection.query(sqlForSelectList,[sect_id], function (err, rows){
             if (err) console.error("err : " + err);
-            console.log("rows : "+ JSON.stringify(rows));
 
             res.render('noticelist', {title: '강의 공지사항', rows: rows, sid: sid});
             connection.release();
@@ -159,14 +151,20 @@ router.get('/:sid/notice/:idx',function (req,res,next)
 {
     var sid = req.params.sid;
     var index = req.params.idx;
-    console.log(index);
     pool.getConnection(function (err, connection)
     {
         var sql="select section_id, title, writer, wdate, hit, content from SECTION_BOARD where idx=?";
         connection.query(sql, [index], function (err, row){
             if(err) console.error(err);
-            res.render('notice', {title: "공지사항 조회", row:row[0], sid:sid});
-            connection.release();
+            pool.getConnection(function (err, connection)
+            {
+                var sql1 = "update section_board set hit = hit + 1 where idx = ?;";
+                connection.query(sql1, index, function (err, rows){
+                    if(err) console.error(err);
+                    res.render('notice', {title: "공지사항 조회", row:row[0], sid:sid});
+                    connection.release();
+                });
+            });
         });
     });
 });
@@ -192,18 +190,14 @@ router.get('/drop/:sid', function(req,res,next){
                 var sqlsearchclass = "SELECT student.class from student where student.student_id=?;"
                 connection.query(sqlsearchclass, [student_id], function (err, classes) {
                     if (err) console.error("err : " + err);
-                    console.log("학년:" + JSON.stringify(classes));
                     var classresult=JSON.parse(JSON.stringify(classes));
                     var c_year=classresult[0].class;
-                    console.log([student_id, this_semester, c_year]);
                     var sqlForSelectRow = "SELECT distinct course.cname, course.credit_hours from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=? and student_info.s_semester=? and student_info.s_year=?";
                     var sqlForSelectInfo = "SELECT sname, passwd from student where student_id = ?";
                     connection.query(sqlForSelectRow, [student_id, this_semester, c_year], function(err, rows){
                         if(err) console.error("err : " + err);
                         connection.query(sqlForSelectInfo, student_id, function(err, name){
                             if(err) console.error("err : " + err);
-                            console.log("이름 : " + JSON.stringify(name));
-                            console.log(rows);
                             res.render('drop', {sid: student_id, rows: rows, info: name[0]});
                             connection.release();
                         });
@@ -223,18 +217,14 @@ router.get('/drop/:sid', function(req,res,next){
                 var sqlsearchclass = "SELECT student.class from student where student.student_id=?;"
                 connection.query(sqlsearchclass, [student_id], function (err, classes) {
                     if (err) console.error("err : " + err);
-                    console.log("학년:" + JSON.stringify(classes));
                     var classresult=JSON.parse(JSON.stringify(classes));
                     var c_year=classresult[0].class;
-                    console.log([student_id, this_semester, c_year]);
                     var sqlForSelectRow = "SELECT distinct course.cname, course.credit_hours from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=? and student_info.s_semester=? and student_info.s_year=?";
                     var sqlForSelectInfo = "SELECT sname, passwd from student where student_id = ?";
                     connection.query(sqlForSelectRow, [student_id, this_semester, c_year], function(err, rows){
                         if(err) console.error("err : " + err);
                         connection.query(sqlForSelectInfo, student_id, function(err, name){
                             if(err) console.error("err : " + err);
-                            console.log("이름 : " + JSON.stringify(name));
-                            console.log(rows);
                             res.render('drop', {s_id: student_id, rows: rows, info: name[0]});
                             connection.release();
                         });
@@ -248,11 +238,9 @@ router.get('/drop/:sid', function(req,res,next){
 router.post('/drop/:sid', function(req, res, next){
     var course_name = req.body.course_name;
     var s_id = req.body.student_id;
-    console.log(req.body);
     var date=new Date();
     var month=date.getMonth()+1;
     var year = date.getFullYear();
-    //var month=7;
     if((1<=month && month<=2) || (month>=8)){
         var sem=2;
     }
@@ -262,7 +250,6 @@ router.post('/drop/:sid', function(req, res, next){
 
     pool.getConnection(function(err, connection){
         var datas = [course_name, sem, year, s_id];
-        console.log(datas);
         var sqlForSelectBoard = "select section_id from student_info where student_info.section_id in (select section.section_id from section, course where course.cname = ? and section.semester = ? and section.years = ? and course.cnumber = section.cnumber) and student_info.student_id = ?;"
         connection.query(sqlForSelectBoard,datas, function(err, results) {
             if(err) console.error("err : " + err);
@@ -287,10 +274,8 @@ router.get('/register/:s_id',function (req,res,next)
     let month = today.getMonth();
     let date = today.getDate();
     var month_date = ''.concat(month,date);
-    var this_semester = 2;
+    var this_semester = 1;
     var year = full_year;
-
-    console.log(s_id);
 
     pool.getConnection(function (err, connection)
     {
@@ -298,8 +283,6 @@ router.get('/register/:s_id',function (req,res,next)
         var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
         connection.query(sql, [this_semester,year], function (err, rows) {
             if (err) console.error(err);
-            console.log("듣는 수업 : ", rows);
-            console.log("수업 갯수 : ", rows.length);
             var sql = "SELECT passwd from student where student_id = ?";
             connection.query(sql, [s_id], function (err, password) {
                 if (err) console.error(err);
@@ -320,8 +303,7 @@ router.get('/register/:s_id',function (req,res,next)
                 var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
                 connection.query(sql, [this_semester,year], function (err, rows) {
                     if (err) console.error(err);
-                    console.log("듣는 수업 : ", rows);
-                    console.log("수업 갯수 : ", rows.length);
+
                     var sql = "SELECT passwd from student where student_id = ?";
                     connection.query(sql, [s_id], function (err, password) {
                         if (err) console.error(err);
@@ -343,8 +325,7 @@ router.get('/register/:s_id',function (req,res,next)
                 var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
                 connection.query(sql, [this_semester,year], function (err, rows) {
                     if (err) console.error(err);
-                    console.log("듣는 수업 : ", rows);
-                    console.log("수업 갯수 : ", rows.length);
+
                     var sql = "SELECT passwd from student where student_id = ?";
                     connection.query(sql, [s_id], function (err, password) {
                         if (err) console.error(err);
@@ -365,12 +346,10 @@ router.post('/register/:student_id', function(req, res, next){
     var year = 0;
     var sem = req.body.sem;
     var grade = null;
-    console.log("조현우");
     pool.getConnection(function (err, connection) {
         var sqlForInsertBoard = "select MAX(s_year) as s_year from student_info where student_id = ?";
         connection.query(sqlForInsertBoard, [student_id], function (err, results) {
             if (err) console.error("err : " + err);
-            console.log("result year: "+results[0].s_year);
             if(results[0].s_year == null)
                 results[0].s_year = 0;
             var sql = "SELECT Max(grade) as grade from student_info where student_id = ? and s_year = ?";
@@ -382,22 +361,13 @@ router.post('/register/:student_id', function(req, res, next){
                     else
                         year = Number(results[0].s_year);
 
-                    console.log("yearerfadfad: "+year);
 
-                    console.log("조현우 학년: "+year);
-                    console.log("aatype: "+cnames);
-                    console.log("aatype: "+insts);
-                    console.log("aatype: "+ltimes);
-                    console.log("aalength: "+cnames.length)
-                    console.log(cnames.indexOf(','));
 
                     cnames = cnames.substring(1, cnames.length - 1);
                     insts = insts.substring(1, insts.length - 1);
                     ltimes = ltimes.substring(1, ltimes.length - 1);
-                    console.log("raw: "+cnames);
-                    console.log("raw: "+insts);
-                    console.log("raw: "+ltimes);
-                    var sqlForInsertBoard = "select section_id from section as s where instructor = ? and ltime = ? and years = ? and s.cnumber IN(select c.cnumber from course as c where cname = ?)";
+
+                    var sqlForInsertBoard = "select section_id,years,semester from section as s where instructor = ? and ltime = ? and years = ? and s.cnumber IN(select c.cnumber from course as c where cname = ?)";
                     for( var i = 0 ;  ; i ++) {
                         var idx1 = cnames.indexOf(',');
                         var idx2 = insts.indexOf(',');
@@ -430,30 +400,25 @@ router.post('/register/:student_id', function(req, res, next){
                             old_ltime = old_ltime1 + "," + old_ltime2;
                         }
                         var datas = [old_inst, old_ltime, this_year, old_cname];
-                        console.log("datas: "+datas);
-                        var retake = 0;
+
                         connection.query(sqlForInsertBoard, datas, function (err, result_section_id) {
                             if (err) console.error("err : " + err);
 
-                            console.log(result_section_id.length);
-                            if(result_section_id.length != 1)
-                                retake = 1;
+                            var insert_datas = [student_id, result_section_id[0].section_id, grade, sem, year];
 
-                            var insert_datas = [student_id, result_section_id[0].section_id, grade, sem, year, retake];
-                            console.log("조현우 데이터: " + insert_datas);
-                            var sql = "INSERT INTO STUDENT_INFO VALUES(?, ?, ?, ?, ?, ?)";
+                            var sql = "INSERT INTO STUDENT_INFO VALUES(?, ?, ?, ?, ?)";
                             connection.query(sql, insert_datas, function (err, rows) {
                                 if (err) console.error(err);
-                                console.log("rows : " + JSON.stringify(rows));
+
                             });
                         });
                         if(idx1 == -1)
                             break;
                     }
-                    res.redirect('login/main/'+student_id);
+                    res.redirect('/login/main/'+student_id);
                 }
                 else{
-                    console.log("시발련아");
+
                     res.send({data: "no insert"});
                 }
                 connection.release();
@@ -461,10 +426,10 @@ router.post('/register/:student_id', function(req, res, next){
         });
     });
 });
+
 router.get('/search/:s_id', function(req, res, next){
     var s_id = req.params.s_id;
     var check = true;
-    console.log(s_id);
     res.render('search', {title : "시간표 조회", check: check, s_id : s_id});
 });
 
@@ -494,21 +459,15 @@ router.get('/schedule/:data1/:data2/:data3/:data4', function(req, res, next){
     var search_id = req.params.data2;
     var s_year = req.params.data3;
     var s_semester = req.params.data4;
-    console.log(s_id);
-    console.log(search_id);
-    console.log(s_year);
-    console.log(s_semester);
     pool.getConnection(function (err, connection){
         var sqlForSelectList = "select c.cname, s.ltime from course as c, section as s where c.cnumber = s.cnumber and s.section_id IN(select si.section_id from student_info as si where si.s_semester = ? and si.s_year = ? and si.student_id = ?);";
         connection.query(sqlForSelectList,[s_semester, s_year, search_id], function (err, rows){
             if (err) console.error("err : " + err);
-            console.log("rows : "+ JSON.stringify(rows));
 
             pool.getConnection(function (err, connection){
                 var sqlForSelectList = "select c.cname, s.ltime from course as c, section as s where c.cnumber = s.cnumber and s.section_id IN(select si.section_id from student_info as si where si.s_semester = ? and si.s_year = ? and si.student_id = ?);";
                 connection.query(sqlForSelectList,[s_semester, s_year, s_id], function (err, results){
                     if (err) console.error("err : " + err);
-                    console.log("results : "+ JSON.stringify(results));
                     res.render('schedule', {title: '상세 조회',s_id : s_id, search_id : search_id, rows: rows, s_year: s_year, s_semester:s_semester, results: results});
                     connection.release();
                 });
@@ -524,16 +483,11 @@ router.get('/simul/:s_id',function (req,res,next)
     let year = today.getFullYear();
     var this_semester = 2;
 
-    console.log(s_id);
-
     pool.getConnection(function (err, connection)
     {
-        /*테스트용 코드*/
         var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
         connection.query(sql, [this_semester,year], function (err, rows) {
             if (err) console.error(err);
-            console.log("듣는 수업 : ", rows);
-            console.log("수업 갯수 : ", rows.length);
             var sql = "SELECT passwd from student where student_id = ?";
             connection.query(sql, [s_id], function (err, password) {
                 if (err) console.error(err);
@@ -546,21 +500,17 @@ router.get('/simul/:s_id',function (req,res,next)
 
 router.post('/simulcheck/:sid', function(req, res, next){
     var cname = req.body.cname;
-    var inst = req.body.instructor;
     var sid = req.body.sid;
-    console.log(req.body);
 
     pool.getConnection(function(err, connection){
-        var datas = [inst, cname, sid];
-        console.log(datas);
-        var sqlForSelectBoard2 = "select grade from student_info where student_info.section_id in (select section_id from section, course where section.instructor = ? and section.cnumber = course.cnumber and course.cname = ?) and student_info.student_id = ?;"
+        var datas = [cname, sid];
+        var sqlForSelectBoard2 = "select grade from student_info where student_info.section_id in (select section_id from section, course where section.cnumber = course.cnumber and course.cname = ?) and student_info.student_id = ?;"
         connection.query(sqlForSelectBoard2, datas, function(err, result){
             if(err) console.error("err : " + err);
             if(result[0] == undefined){ //재수강이 아닌 경우
                 var sqlForprenum = "select course.prenumber from course where course.cname = ?;";
                 connection.query(sqlForprenum, cname, function(err, prenum_result){
                     if(err) console.error("err : " + err);
-                    console.log(prenum_result);
                     var prenum = JSON.parse(JSON.stringify(prenum_result));
                     prenum = prenum[0].prenumber;
                     if(prenum != null){ //선이수 과목이 있는 경우
@@ -568,7 +518,6 @@ router.post('/simulcheck/:sid', function(req, res, next){
                         var sqlForcheckprenum = "select * from student_info where student_info.section_id in (select section_id from section where section.cnumber = ?) and student_id = ?;";
                         connection.query(sqlForcheckprenum, dataforprenum, function(err, check){
                             if(err) console.error("err : "+ err);
-                            console.log(check[0]);
                             if(check[0] == undefined){  //선이수 과목을 듣지 않은 경우
                                 res.send({data:"not okay by prenum"});
                             }
@@ -583,14 +532,7 @@ router.post('/simulcheck/:sid', function(req, res, next){
                 });
             }
             else{ //재수강인 경우
-                var grades = result[0].grade;
-                console.log(grades);
-                if(grades == "C+" || grades == "C0" || grades == "D+" || grades == "D0" || grades == "F" || grades == null){
-                    res.send({data:"okay"});
-                } // 재수강 가능 성적인 경우
-                else{
-                    res.send({data:"not okay"});
-                } // 재수강 불가 성적인 경우
+                res.send({data:"not okay"});
             }
             connection.release();
         })

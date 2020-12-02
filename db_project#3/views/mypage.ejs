@@ -92,7 +92,7 @@ var oneItem = rows;
         <th scope="row" style="background-color: #e9ecef">학년</th><td><%= oneItem.class %></td>
     </tr>
     <tr>
-        <th scope="row" style="background-color: silver" >전공</th><td><%= oneItem.major %></td>
+        <th scope="row" style="background-color: #e9ecef" >전공</th><td><%= oneItem.major %></td>
     </tr>
     </tbody>
 </table>
@@ -112,8 +112,9 @@ for (var k=0;k<courses.length;k++){
     var ro=courses[k];
 
     var sy=[ro.s_year,ro.s_semester];
+
     for(var m=0;m<8;m++){
-        if(sy[0][0] == comp[m][0][0] && sy[0][1] == comp[m][0][1] && temp[m]==0) {
+        if(sy[0] == comp[m][0] && sy[1] == comp[m][1] && temp[m]==0) {
             temp[m] = temp[m] + 1;
         }
     }
@@ -308,8 +309,14 @@ for(var i =0;i<8;i++){
         if(com_major[h]!="-")
             total_mm=total_mm+com_major[h];
     }
-    total_gg=total_gg/check_grade;
-    total_mm=total_mm/check_major;
+    if(check_grade!=0)
+        total_gg=total_gg/check_grade;
+    else
+        total_gg="-";
+    if(check_major!=0)
+        total_mm=total_mm/check_major;
+    else
+        total_mm="-";
  %>
 
 
@@ -318,8 +325,31 @@ for(var i =0;i<8;i++){
     <tr>
         <th>전체학기</th>
         <th><%=total_hh%></th>
-        <th><%=total_mm.toFixed(2)%>/4.50</th>
-        <th><%=total_gg.toFixed(2)%>/4.50</th>
+
+        <%
+        if(total_mm!="-"){
+        %>
+        <th><%=total_mm.toFixed(2)%></th>
+        <%
+        }
+        else{
+        %>
+        <th><%=total_mm%></th>
+        <%
+        }
+        if(total_gg!="-"){
+        %>
+        <th><%=total_gg.toFixed(2)%></th>
+        <%
+        }
+
+        else{
+        %>
+
+        <th><%=total_gg%></th>
+        <%
+        }
+        %>
     </tr>
     </thead>
 
@@ -359,22 +389,21 @@ if(temp[idx]==1){
 %>
 <table class= "table table-hover">
     <colgroup>
-        <col width="20%">
-        <col width="20%">
-        <col width="20%">
-        <col width="20%">
-        <col width="20%">
+        <col width="25%">
+        <col width="25%">
+        <col width="25%">
+        <col width="25%">
+        <col width="25%">
     </colgroup>
     <thead class="thead-light">
     <tr>
-        <th colspan="5" style="text-align: center"><%=y%>학년 <%=s%>학기</th>
+        <th colspan="4" style="text-align: center"><%=y%>학년 <%=s%>학기</th>
     </tr>
     <tr>
         <th>과목명</th>
         <th>개설학과</td>
         <th>학점</th>
         <th>성적</th>
-        <th>재수강여부</th>
     </tr>
     </thead>
     <tbody>
@@ -400,18 +429,6 @@ if(temp[idx]==1){
         else{
         %>
             <td style="color: silver">미등록 상태</td>
-        <%
-        }
-        %>
-        <%
-        if(twoItem.retake==1){
-        %>
-            <td style="color: red">재수강</td>
-        <%
-        }
-        else{
-        %>
-            <td></td>
         <%
         }
         %>
