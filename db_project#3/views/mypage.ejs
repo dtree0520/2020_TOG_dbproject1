@@ -12,48 +12,57 @@
         .ratio em1{position:absolute;bottom:-20px;width:100%;font-size:12px;font-weight:bold;text-align:center;}
     </style>
     <style>
-        body{
-            margin: 0;
-        }
         .container {
-            width: 100vw;
-            height: 100vh;
-            background: #bdb9c5;
+            margin-top: 4%;
+            width:100vw;
+            height: 100%;
+            background: white;
+        }
+        body {
+            margin: 0;
+            background: #f5f5f5;
         }
     </style>
 
 </head>
 
 <br>
-<header>
-    <div>
-        <div>
-            <a href="/login/main/<%= sid %>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
-            <br></br>
-        </div>
-        <div>
-
-            <a href="/login/mypage/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
-            <a href="/login/register/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
-            <a href="/login/drop/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
-            <a href="/login/search/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
-            <a href="/login/simul/<%= sid %>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
-        </div>
+<header class="navbar fixed-top navbar-expand-lg navbar-light" style="background: #f8f9fa;">
+    <span class="navbar-brand mb-0 h1" style="font-size: 50px">TOG</span>
+    <div class="navbar-nav-scroll" id="navbarNavDropdown">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link" href="/login/main/<%= sid %>" style="font-size: 30px;">홈</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/mypage/<%= sid %>" style="font-size: 30px;">마이페이지</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/register/<%= sid %>" style="font-size: 30px;">수강신청</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/drop/<%= sid %>" style="font-size: 30px;">수강포기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/search/<%= sid %>" style="font-size: 30px;">시간표조회</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/simul/<%= sid %>" style="font-size: 30px;">시뮬레이션</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/" style="font-size: 30px;">로그아웃</a>
+            </li>
+        </ul>
     </div>
-
-
 </header>
 <body>
-
-
-
+<div class="container">
 
 <br>
 <%
 var oneItem = rows;
 %>
 
-<br></br><br></br><br></br>
 <span style="font-weight: bold;font-size: 30px">신상 정보조회</span>
 <br></br>
 <div class="table-responsive-sm">
@@ -65,10 +74,10 @@ var oneItem = rows;
 
     <tbody>
     <tr>
-        <th scope="row" style="background-color: silver">이름</th> <td><%= oneItem.sname %></td>
+        <th scope="row" style="background-color: #e9ecef">이름</th> <td><%= oneItem.sname %></td>
     </tr>
     <tr>
-        <th scope="row" style="background-color: silver">학번</th><td><%= oneItem.student_id %></td>
+        <th scope="row" style="background-color: #e9ecef">학번</th><td><%= oneItem.student_id %></td>
     </tr>
     <tr>
         <%
@@ -77,10 +86,10 @@ var oneItem = rows;
         else
             var sex="여"
         %>
-        <th scope="row" style="background-color: silver">성별</th><td><%= sex %></td>
+        <th scope="row" style="background-color: #e9ecef">성별</th><td><%= sex %></td>
     </tr>
     <tr>
-        <th scope="row" style="background-color: silver">학년</th><td><%= oneItem.class %></td>
+        <th scope="row" style="background-color: #e9ecef">학년</th><td><%= oneItem.class %></td>
     </tr>
     <tr>
         <th scope="row" style="background-color: silver" >전공</th><td><%= oneItem.major %></td>
@@ -421,6 +430,7 @@ if(temp[idx]==1){
 %>
 
 
-
+</div>
 </body>
+
 </html>

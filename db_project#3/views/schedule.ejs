@@ -9,6 +9,7 @@
             border: 1px solid black;
             border-collapse: collapse;
             text-align: center;
+            vertical-align: middle;
             width : 100px;
             height: 40px;
         }
@@ -18,68 +19,96 @@
         th {
             text-align: center;
         }
+        td {
+            font-size: 10px;
+        }
+    </style>
+    <style>
+        .container {
+            margin-top: 4%;
+            width:2000px;
+            height: 100vh;
+            background: white;
+        }
+        body {
+            margin: 0;
+            background: #f5f5f5;
+        }
     </style>
 </head>
 <br>
-<header>
-    <div>
-        <div>
-            <a href="/login/main/<%=s_id%>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
-            <br></br>
-        </div>
-        <div>
-            <a href="/login/mypage/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
-            <a href="/login/register/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
-            <a href="/login/drop/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
-            <a href="/login/search/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
-            <a href="/login/simul/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
-        </div>
+<header class="navbar fixed-top navbar-expand-lg navbar-light" style="background: #f8f9fa;">
+    <span class="navbar-brand mb-0 h1" style="font-size: 50px">TOG</span>
+    <div class="navbar-nav-scroll" id="navbarNavDropdown">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link" href="/login/main/<%= s_id %>" style="font-size: 30px;">홈</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/mypage/<%= s_id %>" style="font-size: 30px;">마이페이지</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/register/<%= s_id %>" style="font-size: 30px;">수강신청</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/drop/<%= s_id %>" style="font-size: 30px;">수강포기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/search/<%= s_id %>" style="font-size: 30px;">시간표조회</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/simul/<%= s_id %>" style="font-size: 30px;">시뮬레이션</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/" style="font-size: 30px;">로그아웃</a>
+            </li>
+        </ul>
     </div>
 </header>
 <body>
+<br><br><br><br>
 <div style="float:left;">
-    <h1><%=s_id%>님의 <%=s_year%>학년 <%=s_semester%>학기 시간표</h1>
-    <table style="width:90%">
+    <h3><%=s_id%>님의 <%=s_year%>학년 <%=s_semester%>학기 시간표</h3>
+    <table class="table" style="width:80%">
+        <thead class="thead-light">
         <tr>
-            <th style="background-color: gray"> </th>
-            <th id="one" style="background-color: gray">월</th>
-            <th id="two" style="background-color: gray">화</th>
-            <th id="thr" style="background-color: gray">수</th>
-            <th id="for" style="background-color: gray">목</th>
-            <th id="fiv" style="background-color: gray">금</th>
+            <th> </th>
+            <th id="one">월</th>
+            <th id="two">화</th>
+            <th id="thr">수</th>
+            <th id="for">목</th>
+            <th id="fiv">금</th>
         </tr>
+        </thead>
         <tbody>
         <%
-            var name = new Array();
-            var fday = new Array();
-            var tday = new Array();
-            var ftime = new Array();
-            var ttime = new Array();
-            var color = new Array();
-            if(results != null) {
-                if (results.length != 0) {
-                    for (var i = 0; i < results.length; i++) {
-                        var oneItem = results[i];
-                        name[i] = oneItem.cname;
-                        fday[i] = oneItem.ltime.substring(0, 1);
-                        ftime[i] = oneItem.ltime.substring(1, 2);
-                        if (oneItem.ltime.substring(3, 4).charCodeAt(0) > 48 && oneItem.ltime.substring(3, 4).charCodeAt(0) < 56) {
-                            tday[i] = fday[i];
-                            ttime[i] = oneItem.ltime.substring(3, 4);
-                        } else {
-                            tday[i] = oneItem.ltime.substring(3, 4);
-                            ttime[i] = oneItem.ltime.substring(4, 5);
-                        }
+        var name = new Array();
+        var fday = new Array();
+        var tday = new Array();
+        var ftime = new Array();
+        var ttime = new Array();
+        var color = new Array();
+        if(results != null) {
+            if (results.length != 0) {
+                for (var i = 0; i < results.length; i++) {
+                    var oneItem = results[i];
+                    name[i] = oneItem.cname;
+                    fday[i] = oneItem.ltime.substring(0, 1);
+                    ftime[i] = oneItem.ltime.substring(1, 2);
+                    if (oneItem.ltime.substring(3, 4).charCodeAt(0) > 48 && oneItem.ltime.substring(3, 4).charCodeAt(0) < 56) {
+                        tday[i] = fday[i];
+                        ttime[i] = oneItem.ltime.substring(3, 4);
+                    } else {
+                        tday[i] = oneItem.ltime.substring(3, 4);
+                        ttime[i] = oneItem.ltime.substring(4, 5);
                     }
                 }
-                for (var i = 0; i < name.length; i++) {
-                    var r = Math.round(Math.random() * 255);
-                    var g = Math.round(Math.random() * 255);
-                    var b = Math.round(Math.random() * 255);
-                    var str = "rgb(" + r + "," + g + "," + b + ")";
-                    color[i] = str;
-                }
             }
+            for (var i = 0; i < name.length; i++) {
+                var str = "rgb(207,255,0)";
+                color[i] = str;
+            }
+        }
         console.log(name);
         console.log(fday);
         console.log(ftime);
@@ -144,8 +173,9 @@
         console.log(fr);
         console.log(fiv);
         %>
+        <thead class="thead-light">
         <tr>
-            <th style="background-color: gray">1교시</th>
+            <th>1교시</th>
             <%if((mon[0] == mon[1]) && mon[0] != null){%>
             <td style="background-color: <%=moncolor[0]%>" rowspan="2"><%=mon[0]%></td>
             <% }else {%>
@@ -169,7 +199,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">2교시</th>
+            <th>2교시</th>
             <%if((mon[0] == mon[1]) && mon[1] != null ){%>
             <% }else if((mon[1] == mon[2]) && mon[1] != null){%>
             <td style="background-color: <%=moncolor[1]%>" rowspan="2"><%=mon[1]%></td>
@@ -202,7 +232,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">3교시</th>
+            <th>3교시</th>
             <%if((mon[1] == mon[2])&& mon[2] != null){%>
             <% }else if((mon[2] == mon[3])&& mon[2] != null){%>
             <td style="background-color: <%=moncolor[2]%>" rowspan="2"><%=mon[2]%></td>
@@ -235,7 +265,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">4교시</th>
+            <th>4교시</th>
             <%if((mon[2] == mon[3])&& mon[3] != null){%>
             <% }else if((mon[3] == mon[4])&& mon[3] != null){%>
             <td style="background-color: <%=moncolor[3]%>" rowspan="2"><%=mon[3]%></td>
@@ -268,7 +298,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">5교시</th>
+            <th>5교시</th>
             <%if((mon[3] == mon[4]) && mon[4] != null){%>
             <% }else if((mon[4] == mon[5])&& mon[4] != null){%>
             <td style="background-color: <%=moncolor[4]%>" rowspan="2"><%=mon[4]%></td>
@@ -301,7 +331,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">6교시</th>
+            <th>6교시</th>
             <%if((mon[4] == mon[5])&& mon[5] != null){%>
             <% }else if((mon[5] == mon[6])&& mon[5] != null){%>
             <td style="background-color: <%=moncolor[5]%>" rowspan="2"><%=mon[5]%></td>
@@ -334,7 +364,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">7교시</th>
+            <th>7교시</th>
             <%if((mon[5] == mon[6])&& mon[6] != null){%>
             <%} else {%>
             <td style="background-color: <%=moncolor[6]%>"><%=mon[6]%></td>
@@ -356,22 +386,25 @@
             <td style="background-color: <%=fivcolor[6]%>"><%=fiv[6]%></td>
             <%}%>
         </tr>
+        </thead>
         </tbody>
     </table>
 </div>
 
 <div style="float:left;">
-    <h1><%=search_id%>님의 <%=s_year%>학년 <%=s_semester%>학기 시간표</h1>
+    <h3><%=search_id%>님의 <%=s_year%>학년 <%=s_semester%>학기 시간표</h3>
 
-    <table style="width:90%">
+    <table class="table" style="width:80%">
+        <thead class="thead-light">
         <tr>
-            <th style="background-color: gray"> </th>
-            <th id="one" style="background-color: gray">월</th>
-            <th id="two" style="background-color: gray">화</th>
-            <th id="thr" style="background-color: gray">수</th>
-            <th id="for" style="background-color: gray">목</th>
-            <th id="fiv" style="background-color: gray">금</th>
+            <th> </th>
+            <th id="one">월</th>
+            <th id="two">화</th>
+            <th id="thr">수</th>
+            <th id="for">목</th>
+            <th id="fiv">금</th>
         </tr>
+        </thead>
         <tbody>
         <%
         if(rows.length!=0){
@@ -396,10 +429,7 @@
             }
         }
         for(var i =0; i<name.length; i++){
-            var r = Math.round(Math.random()*255);
-            var g = Math.round(Math.random()*255);
-            var b = Math.round(Math.random()*255);
-            var str = "rgb("+r+","+g+","+b+")";
+            var str = "rgb(207,255,0)";
             color[i] = str;
         }
         console.log(name);
@@ -466,8 +496,9 @@
         console.log(fr);
         console.log(fiv);
         %>
+        <thead class="thead-light">
         <tr>
-            <th style="background-color: gray">1교시</th>
+            <th>1교시</th>
             <%if((mon[0] == mon[1]) && mon[0] != null){%>
             <td style="background-color: <%=moncolor[0]%>" rowspan="2"><%=mon[0]%></td>
             <% }else {%>
@@ -491,7 +522,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">2교시</th>
+            <th >2교시</th>
             <%if((mon[0] == mon[1]) && mon[1] != null ){%>
             <% }else if((mon[1] == mon[2]) && mon[1] != null){%>
             <td style="background-color: <%=moncolor[1]%>" rowspan="2"><%=mon[1]%></td>
@@ -524,7 +555,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">3교시</th>
+            <th>3교시</th>
             <%if((mon[1] == mon[2])&& mon[2] != null){%>
             <% }else if((mon[2] == mon[3])&& mon[2] != null){%>
             <td style="background-color: <%=moncolor[2]%>" rowspan="2"><%=mon[2]%></td>
@@ -557,7 +588,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">4교시</th>
+            <th>4교시</th>
             <%if((mon[2] == mon[3])&& mon[3] != null){%>
             <% }else if((mon[3] == mon[4])&& mon[3] != null){%>
             <td style="background-color: <%=moncolor[3]%>" rowspan="2"><%=mon[3]%></td>
@@ -590,7 +621,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">5교시</th>
+            <th>5교시</th>
             <%if((mon[3] == mon[4]) && mon[4] != null){%>
             <% }else if((mon[4] == mon[5])&& mon[4] != null){%>
             <td style="background-color: <%=moncolor[4]%>" rowspan="2"><%=mon[4]%></td>
@@ -623,7 +654,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">6교시</th>
+            <th>6교시</th>
             <%if((mon[4] == mon[5])&& mon[5] != null){%>
             <% }else if((mon[5] == mon[6])&& mon[5] != null){%>
             <td style="background-color: <%=moncolor[5]%>" rowspan="2"><%=mon[5]%></td>
@@ -656,7 +687,7 @@
             <%}%>
         </tr>
         <tr>
-            <th style="background-color: gray">7교시</th>
+            <th>7교시</th>
             <%if((mon[5] == mon[6])&& mon[6] != null){%>
             <%} else {%>
             <td style="background-color: <%=moncolor[6]%>"><%=mon[6]%></td>
@@ -678,8 +709,11 @@
             <td style="background-color: <%=fivcolor[6]%>"><%=fiv[6]%></td>
             <%}%>
         </tr>
+        </thead>
         </tbody>
     </table>
 </div>
+
+
 </body>
 </html>

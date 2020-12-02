@@ -10,46 +10,78 @@
             return true;
         }
     </script>
+    <style>
+        .container {
+            margin-top: 4%;
+            width:100vw;
+            height: 35vw;
+            background: white;
+        }
+        body {
+            margin: 0;
+            background: #f5f5f5;
+        }
+    </style>
 </head>
 <br>
-<header>
-    <%if(!check){%>
-        <script>checkid();</script>
-    <%}%>
-    <div>
-        <div>
-            <a href="/login/main/<%=s_id%>" style="color: blueviolet;font-size: 3.0em;font-weight: bold;text-decoration:none;text-align:left;">TOG 정보관리 시스템</a>
-            <br></br>
-        </div>
-        <div>
-            <a href="/login/mypage/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">마이페이지  |</a>
-            <a href="/login/register/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강신청  |</a>
-            <a href="/login/drop/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">수강포기  |</a>
-            <a href="/login/search/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시간표조회  |</a>
-            <a href="/login/simul/<%=s_id%>" style="color: black;font-size: 2.0em;text-decoration:none;text-align:right;">시뮬레이션</a>
-        </div>
+<%if(!check){%>
+    <script>checkid();</script>
+<%}%>
+<header class="navbar fixed-top navbar-expand-lg navbar-light" style="background: #f8f9fa;">
+    <span class="navbar-brand mb-0 h1" style="font-size: 50px">TOG</span>
+    <div class="navbar-nav-scroll" id="navbarNavDropdown">
+        <ul class="navbar-nav bd-navbar-nav flex-row">
+            <li class="nav-item">
+                <a class="nav-link" href="/login/main/<%= s_id %>" style="font-size: 30px;">홈</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/mypage/<%= s_id %>" style="font-size: 30px;">마이페이지</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/register/<%= s_id %>" style="font-size: 30px;">수강신청</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/drop/<%= s_id %>" style="font-size: 30px;">수강포기</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/search/<%= s_id %>" style="font-size: 30px;">시간표조회</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/simul/<%= s_id %>" style="font-size: 30px;">시뮬레이션</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/login/" style="font-size: 30px;">로그아웃</a>
+            </li>
+        </ul>
     </div>
 </header>
+
 <body>
+<div class="container">
 <form action="/login/search/<%=s_id%>" method="post">
     <input type="hidden" name ="s_id" id="s_id" value="<%=s_id%>">
-    <table border="1" width = "100%" style="text-align: center;">
+    <br><br>
+    <table class="table" style="text-align: center;">
         <colgroup>
             <col width="25%">
             <col width="25%">
             <col width="25%">
             <col width="25%">
         </colgroup>
-        <tr style="background-color: grey;">
-            <th colspan="4">검색할 학생의 학번</th>
+        <tr style="background-color: #e9ecef;">
+            <th colspan="4">친구의 학번 찾기</th>
         </tr>
-        <tr style="background-color: grey;">
+        <tr style="background-color: #e9ecef;">
+            <td style="font-weight: bold;">친구의 학번</td>
+            <td style="font-weight: bold;">학년</td>
+            <td style="font-weight: bold;">학기</td>
+            <td></td>
+        </tr>
+        <tr style="background-color: #e9ecef;">
             <td>
-                학번
                 <input type="text" name="student_id" id="student_id" size="50" maxLength="12">
             </td>
             <td>
-                학년
                 <select name="s_year">
                     <option value="none">선택</option>
                     <option value="1">1</option>
@@ -58,7 +90,6 @@
                 </select>
             </td>
             <td>
-                학기
                 <select name="s_semester">
                     <option value="none">선택</option>
                     <option value="1">1</option>
@@ -66,10 +97,11 @@
                 </select>
             </td>
             <td>
-                <button type ="submit" id="searchBtn" class="btn btn-secondary">검색</button>
+                <button type ="submit" id="searchBtn" class="btn btn-primary">검색</button>
             </td>
         </tr>
     </table>
 </form>
+</div>
 </body>
 </html>
