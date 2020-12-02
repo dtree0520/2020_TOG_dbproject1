@@ -109,6 +109,12 @@
                 <td>학점</td>
                 <td>강의시간</td>
             </tr>
+            <tr style="background-color: lightgray; font-size: 1.4em;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
     </form>
 
@@ -171,22 +177,28 @@
             });
         })
 
-        function addRow(tableid) {
+        function addRow(tableid) {// 수강 추가 테이블에서 수강등록 버튼 클릭 시 수강 등록 테이블에 과목 정보 추가
             var sid = document.getElementById("student_id").value;
-            console.log(sid);
+            var table = document.getElementById(tableid);
+            var rowlen = table.rows.length;
+
+            var row = table.insertRow(rowlen-1);   // HTML에서의 권장 표준 문법
+            row.setAttribute("class", "newTr");
+
             var sendtable = document.getElementById("table3");
             var trs = sendtable.getElementsByTagName("tr");
             var tr = trs[1];
             var td = tr.getElementsByTagName("td");
 
-            var cname = td[0].textContent;
-            var instructor =td[1].textContent;
-            var credit_hours = td[2].textContent;
-            var lecture_time = td[3].textContent;
-            var total_credit_hours = 0;
+            var cname = td[0].innerText;
+            var instructor =td[1].innerText;
+            var credit_hours = td[2].innerText;
+            var lecture_time = td[3].innerText;
 
-            var table = document.getElementById(tableid);
-            var rowlen = table.rows.length;
+            var temptrs;
+            var temptr;
+            var temptd;
+            var total_credit_hours = 0;
             if(rowlen >=2){
                 for (var j = 0; j < rowlen - 1; j++) {
                     temptrs = table.getElementsByTagName("tr");
@@ -196,14 +208,15 @@
                         total_credit_hours += Number(credit_hours);
                     }
                     if(temptd[0].innerText != "과목명"){
-                        console.log("number: " + temptd[2]);
+
                         total_credit_hours += Number(temptd[2].innerText);
                     }
-                    if (temptd[0].innerText == cname) {
+                    if (temptd[0].innerText == cname) {// 같은 이름의 다른 과목을 등록 테이블에 추가하려고 할 때
                         alert("이미 등록되어있는 과목입니다.");
                         temptrs[rowlen-1].remove();
                         return false;
-                    } // --> 실제 코드입니다. 최대 이수 학점 테스트 시 주석처리
+                    }
+                    // 강의 시간이 겹칠 때
                     var fday = lecture_time.substr(0,2);
                     var sday = lecture_time.substr(3,2);
                     if(sday.length == 1){
@@ -228,27 +241,28 @@
                     if(j == rowlen - 2)
                         break;
                 }
-                console.log("total: " + total_credit_hours);
+                // 최대 이수학점보다 더 많은 학점을 이수하려고 할 때
                 if(total_credit_hours > 24){
                     alert("수강신청은 최대 24학점까지 가능합니다.");
                     temptrs[rowlen-1].remove();
                     return false;
                 }
             }
-            $.ajax({
-                url:'/login/simulcheck/' + sid,
+            $.ajax({// 서버로 데이터 전송
+                url:'/login/simulcheck/'+sid,
                 type:'post',
                 data:{"sid":sid, "cname":cname, "instructor":instructor},
                 success: function(data) {
                     var sign = JSON.parse(JSON.stringify(data));
                     sign = sign.data;
-                    console.log(sign);
-                    if(sign == "not okay") {
+
+                    if(sign == "not okay") {// 이전에 수강했던 과목의 학점이 B0이상일 때 재수강 불가
                         alert("재수강이 불가한 과목입니다");
-                    } else if (sign == "not okay by prenum"){
+                        temptrs[rowlen-1].remove();
+                    } else if (sign == "not okay by prenum"){// 선수과목 미수강 시 해당 과목 수강 불가
                         alert("선이수 과목을 먼저 수강하시기 바랍니다.");
-                    } else{
-                        var row = table.insertRow(rowlen);   // HTML에서의 권장 표준 문법
+                        temptrs[rowlen-1].remove();
+                    } else{// 등록 테이블에 정보 추가
                         row.setAttribute("class", "newTr");
 
                         row.insertCell(0).innerHTML = cname;
@@ -258,7 +272,7 @@
                     }
                 },
                 error:function (data) {
-                    console.log('error');
+
                 }
             })   //ajax
         }

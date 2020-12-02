@@ -12,10 +12,10 @@ var pool = mysql.createPool({
     multipleStatements : true
 });
 
-router.get('/', function(req, res, next){
+router.get('/', function(req, res, next){//로그인 기능
     res.render('login', {title: 'TOG 정보관리 시스템'});
 });
-router.post('/', function(req, res, next){
+router.post('/', function(req, res, next){//로그인 기능
     var student_id = req.body.student_id;
     var passwd = req.body.passwd;
     var datas = [student_id, passwd];
@@ -23,21 +23,21 @@ router.post('/', function(req, res, next){
         var sqlForInsertBoard = "select * from student where student_id = ? AND passwd = ?"
         connection.query(sqlForInsertBoard,datas, function(err, results) {
             if(err) console.error("err : " + err);
-            if(!results[0]) {
+            if(!results[0]) {//사용자가 입력한 학번과 비밀번호가 table에 저장이 되어 있지 않아 로그인이 불가한 경우
                 res.send('<script type="text/javascript">alert("학번 또는 비밀번호를 잘 못 입력하셨습니다."); document.location.href="/login";</script>');
             }
-            else
+            else//정상적으로 로그인이 가능한 경우
                 res.redirect('login/main/'+student_id);
             connection.release();
         });
     });
 });
 
-router.get('/sign', function(req, res, next){
+router.get('/sign', function(req, res, next){//회원가입 기능
     res.render('sign', {title : "회원가입"});
 });
 
-router.post('/sign',function(req, res, next) {
+router.post('/sign',function(req, res, next) {//회원가입 기능
 
     var sname = req.body.sname;
     var student_id = req.body.student_id;
@@ -51,11 +51,11 @@ router.post('/sign',function(req, res, next) {
         var sqlForInsertBoard = "select * from student where student_id = ?"
         connection.query(sqlForInsertBoard, student_id, function (err, results) {
             if (err) console.error("err : " + err);
-            if (sname == 0 || student_id == 0 || passwd == 0 || sclass == 0 || major == 0 || gender == 0) {
+            if (sname == 0 || student_id == 0 || passwd == 0 || sclass == 0 || major == 0 || gender == 0) {//사용자가 모든 정보를 입력하지 않고 회원가입을 시도할 경우
                 res.send('<script type="text/javascript">alert("모든 정보를 입력해주세요."); document.location.href="sign";</script>');
-            } else if (results[0]) {
+            } else if (results[0]) {//사용자가 생성하고자 하는 학번이 이미 Table에 존재하는 경우
                 res.send('<script type="text/javascript">alert("이미 회원가입한 학번입니다."); document.location.href="sign";</script>');
-            } else {
+            } else {//정상적으로 회원가입이 가능한 경우
                 pool.getConnection(function (err, connection) {
 
                     var sqlForInsertBoard = "insert into student(sname, student_id, passwd, class, major, gender) values(?,?,?,?,?,?)"
@@ -68,37 +68,39 @@ router.post('/sign',function(req, res, next) {
         });
     });
 });
-
+//메인 페이지
 router.get('/main/:student_id', function(req,res,next) {
     var student_id = req.params.student_id;
     var date = new Date();
-    var month = date.getMonth() + 1;
-    //var month=7;
+    var month = date.getMonth() + 1;// get today's month
+
     /* 실제코드입니다.
-    if ((1 <= month && month <= 2) || (month >= 8)) {
+    if ((1 <= month && month <= 2) || (month >= 8)) { //case 2 semester
         var sem = 2;
-    } else {
+    } else { //case 1 semester
         var sem = 1;
     }
     */
-     var sem=1;
+    var sem=2;
 
     pool.getConnection(function (err, connection) {
 
-        var sqlsearchclass = "SELECT student.class from student where student.student_id=?;"
+        var sqlsearchclass = "SELECT student.class from student where student.student_id=?;"    //get student's information
 
-        connection.query(sqlsearchclass, [student_id], function (err, classes) {
+        connection.query(sqlsearchclass, [student_id], function (err, classes) { //implement query
             if (err) console.error("err : " + err);
             var classresult = JSON.parse(JSON.stringify(classes));
             var year = classresult[0].class;
 
 
             var sqlForSelectRow = "SELECT distinct course.cname,student_info.section_id from student_info inner join course inner join section on course.cnumber= section.cnumber and student_info.section_id=section.section_id where student_info.student_id=? and student_info.s_semester=? and student_info.s_year=?";
+           //get course name that student listen
             connection.query(sqlForSelectRow, [student_id, sem, year], function (err, rows) {
 
                 if (err) console.error("err : " + err);
                 pool.getConnection(function (err, connection) {
                     var sqlForSelectList = "select c.cname, s.ltime from course as c, section as s where c.cnumber = s.cnumber and s.section_id IN(select si.section_id from student_info as si where si.s_semester = ? and si.s_year = ? and si.student_id = ?);";
+
                     connection.query(sqlForSelectList, [sem, year, student_id], function (err, results) {
                         if (err) console.error("err : " + err);
                         res.render('main', {sid: student_id, rows: rows, results: results, year: year, sem: sem});
@@ -109,6 +111,7 @@ router.get('/main/:student_id', function(req,res,next) {
         });
     });
 });
+//
 router.get('/mypage/:sid',function (req,res,next)
 {
     var sid = req.params.sid;
@@ -241,12 +244,12 @@ router.post('/drop/:sid', function(req, res, next){
     var date=new Date();
     var month=date.getMonth()+1;
     var year = date.getFullYear();
-    if((1<=month && month<=2) || (month>=8)){
+    /*if((1<=month && month<=2) || (month>=8)){
         var sem=2;
     }
     else{
         var sem=1;
-    }
+    }*/var sem=2;
 
     pool.getConnection(function(err, connection){
         var datas = [course_name, sem, year, s_id];
@@ -266,16 +269,17 @@ router.post('/drop/:sid', function(req, res, next){
     });
 });
 
+//수강신청
 router.get('/register/:s_id',function (req,res,next)
 {
-    var s_id = req.params.s_id;
+    var s_id = req.params.s_id; // 로그인한 학생의 학번
     let today = new Date();
-    let full_year = today.getFullYear();
-    let month = today.getMonth();
-    let date = today.getDate();
-    var month_date = ''.concat(month,date);
-    var this_semester = 1;
-    var year = full_year;
+    let full_year = today.getFullYear(); // --> 2020
+    let month = today.getMonth();        // --> 11 (0 ~ 11) 실제로는 12월
+    let date = today.getDate();          // --> 2 (1 ~ 31) 제출일 기준 12월 2일
+    var month_date = ''.concat(month,date); // --> 112
+    var this_semester = 2; // default 2학기
+    var year = full_year; //
 
     pool.getConnection(function (err, connection)
     {
@@ -283,31 +287,33 @@ router.get('/register/:s_id',function (req,res,next)
         var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
         connection.query(sql, [this_semester,year], function (err, rows) {
             if (err) console.error(err);
+            console.log("듣는 수업 : ", rows);
+            console.log("수업 갯수 : ", rows.length);
             var sql = "SELECT passwd from student where student_id = ?";
             connection.query(sql, [s_id], function (err, password) {
                 if (err) console.error(err);
                 res.render('register', {title: "수강신청", sid: s_id, password: password[0].passwd, rows: rows, semester: this_semester, year: year});
                 connection.release();
             });
-        }); /**/
+        });
         /*실제 코드
         // 2학기
-        if(month >= 6) {
-            this_semester = 2;
-            let start_day = '08/11';
-            let end_day = '08/15';
-            if(month_date < 711 || month_date > 715){
-                res.render('term', {sid: s_id, title: "수강신청", year: full_year, start_day:start_day, end_day:end_day});
+        if(month >= 6) { // 6월 이상이면 2학기 수강신청 수행
+            this_semester = 2; // 2학기 수강신청
+            let start_day = '08/11'; // 수강신청 시작일
+            let end_day = '08/15';  // 수강신청 마감일
+            if(month_date < 711 || month_date > 715){ // 수강신청 기간이 아닐 때 / 실제론 0811이지만 getMonth()함수는 1월이 0부터 시작하므로 711로 비교
+                res.render('term', {sid: s_id, title: "수강신청", year: full_year, start_day:start_day, end_day:end_day}); // view: term.ejs로 렌더링
             }
-            else {
+            else { // 수강신청 기간일 때
                 var sql = "SELECT cname, credit_hours, section_id, instructor, total_number, ltime from course as c,section as s where c.cnumber = s.cnumber and s.semester = ? and s.years = ?";
-                connection.query(sql, [this_semester,year], function (err, rows) {
+                connection.query(sql, [this_semester,year], function (err, rows) { // 다음 학기에 수강가능한 과목들 탐색
                     if (err) console.error(err);
 
-                    var sql = "SELECT passwd from student where student_id = ?";
+                    var sql = "SELECT passwd from student where student_id = ?"; // 해당 학생의 비밀번호 탐색
                     connection.query(sql, [s_id], function (err, password) {
                         if (err) console.error(err);
-                        res.render('register', {title: "수강신청", sid: s_id, password: password[0].passwd, rows: rows, semester: this_semester, year: year});
+                        res.render('register', {title: "수강신청", sid: s_id, password: password[0].passwd, rows: rows, semester: this_semester, year: year}); //  register.ejs로 렌더링
                         connection.release();
                     });
                 });
@@ -338,46 +344,47 @@ router.get('/register/:s_id',function (req,res,next)
     });
 });
 router.post('/register/:student_id', function(req, res, next){
-    var student_id = req.body.student_id;
-    var cnames = req.body.cnames;
-    var insts = req.body.instructors;
-    var ltimes = req.body.lecture_times;
-    var this_year = req.body.year;
-    var year = 0;
-    var sem = req.body.sem;
-    var grade = null;
+    var student_id = req.body.student_id; // 학번
+    var cnames = req.body.cnames;  // 수강신청할 과목들 이름
+    var insts = req.body.instructors; // 과목 담당 교수님들 성함
+    var ltimes = req.body.lecture_times; // 과목 강의 시간들
+    var this_year = req.body.year; // 수강신청할 연도
+    var year = 0;   // 학년
+    var sem = req.body.sem; // 수강신청할 학기
+    var grade = null; // 종강하기 전 까진 학점이 반영되지 않으므로 null
+
     pool.getConnection(function (err, connection) {
         var sqlForInsertBoard = "select MAX(s_year) as s_year from student_info where student_id = ?";
         connection.query(sqlForInsertBoard, [student_id], function (err, results) {
             if (err) console.error("err : " + err);
+
             if(results[0].s_year == null)
                 results[0].s_year = 0;
             var sql = "SELECT Max(grade) as grade from student_info where student_id = ? and s_year = ?";
             connection.query(sql, [student_id, results[0].s_year], function (err, grade_result) {
                 if (err) console.error(err);
-                if(grade_result[0].grade != null || results[0].s_year == 0){
-                    if(sem == 1)
-                        year = Number(results[0].s_year) + 1;
-                    else
-                        year = Number(results[0].s_year);
+                if(grade_result[0].grade != null || results[0].s_year == 0){ // 수강신청을 아직 안했거나 신입생일 때
+                    if(sem == 1) // 다음년도 1학기 수강신청 시 현재는 2학기이므로
+                        year = Number(results[0].s_year) + 1; // 수강신청 연도 + 1
+                    else // 현재년도 2학기 수강신청시 현재는 1학기이므로
+                        year = Number(results[0].s_year); // 연도 변동 X
 
-
-
-                    cnames = cnames.substring(1, cnames.length - 1);
+                    cnames = cnames.substring(1, cnames.length - 1); // 양 끝 괄호 제거
                     insts = insts.substring(1, insts.length - 1);
                     ltimes = ltimes.substring(1, ltimes.length - 1);
 
+                    // 수강신청할 과목들의 정보를 한 과목씩 분리하여 수강신청
                     var sqlForInsertBoard = "select section_id,years,semester from section as s where instructor = ? and ltime = ? and years = ? and s.cnumber IN(select c.cnumber from course as c where cname = ?)";
                     for( var i = 0 ;  ; i ++) {
                         var idx1 = cnames.indexOf(',');
                         var idx2 = insts.indexOf(',');
                         var idx3 = ltimes.indexOf(',');
 
-                        var old_cname;
-                        var old_inst;
-                        var old_ltime1;
-                        var old_ltime2;
-                        var old_ltime;
+                        var old_cname; // 분리된 한 과목
+                        var old_inst;  // 담당 교수님
+                        var old_ltime1; // ex) 화3
+                        var old_ltime2; // ex) 목4
+                        var old_ltime;  // ex) 화3,목4
 
                         if(idx1 == -1){
                             old_cname = cnames.substring(1,cnames.length-1);
@@ -399,26 +406,26 @@ router.post('/register/:student_id', function(req, res, next){
 
                             old_ltime = old_ltime1 + "," + old_ltime2;
                         }
-                        var datas = [old_inst, old_ltime, this_year, old_cname];
 
+                        var datas = [old_inst, old_ltime, this_year, old_cname];
                         connection.query(sqlForInsertBoard, datas, function (err, result_section_id) {
                             if (err) console.error("err : " + err);
 
                             var insert_datas = [student_id, result_section_id[0].section_id, grade, sem, year];
 
-                            var sql = "INSERT INTO STUDENT_INFO VALUES(?, ?, ?, ?, ?)";
+                            var sql = "INSERT INTO STUDENT_INFO VALUES(?, ?, ?, ?, ?)"; // 수강신청
                             connection.query(sql, insert_datas, function (err, rows) {
                                 if (err) console.error(err);
-
+                                console.log("rows : " + JSON.stringify(rows));
                             });
                         });
                         if(idx1 == -1)
-                            break;
+                            break; // 모든 과목의 수강신청이 완료되었으면 무한루프 탈출
                     }
                     res.redirect('/login/main/'+student_id);
                 }
+                // 이미 수강신청을 완료했을 때 또 수강신청을 하려는 경우
                 else{
-
                     res.send({data: "no insert"});
                 }
                 connection.release();
@@ -427,13 +434,13 @@ router.post('/register/:student_id', function(req, res, next){
     });
 });
 
-router.get('/search/:s_id', function(req, res, next){
+router.get('/search/:s_id', function(req, res, next){//시간표 조회 기능
     var s_id = req.params.s_id;
     var check = true;
     res.render('search', {title : "시간표 조회", check: check, s_id : s_id});
 });
 
-router.post('/search/:s_id', function(req, res, next){
+router.post('/search/:s_id', function(req, res, next){//시간표 조회 기능
     var search_id = req.body.student_id;
     var s_id = req.body.s_id;
     var s_year = req.body.s_year;
@@ -444,10 +451,10 @@ router.post('/search/:s_id', function(req, res, next){
         var sql1 = mysql.format(sqlForSelectRow, [search_id]);
         connection.query(sql1, function (err, rows) {
             if (err) console.error("err : " + err);
-            if(rows[0] == undefined){
+            if(rows[0] == undefined){//검색한 학번이 존재하지 않는 경우
                 res.render('search',{check: false, s_id: s_id});
             }
-            else{
+            else{//검색 가능한 경우
                 res.redirect("/login/schedule/" + s_id + "/" + search_id +"/" + s_year +"/" + s_semester);
             }
             connection.release();
@@ -479,9 +486,15 @@ router.get('/schedule/:data1/:data2/:data3/:data4', function(req, res, next){
 router.get('/simul/:s_id',function (req,res,next)
 {
     var s_id = req.params.s_id;
-    let today = new Date();
-    let year = today.getFullYear();
-    var this_semester = 2;
+    var date=new Date();
+    var month=date.getMonth()+1;
+    var year = date.getFullYear();
+    /*if((1<=month && month<=2) || (month>=8)){
+        var this_semester=2;
+    }
+    else{
+        var this_semester=1;
+    }*/var this_semester=2;
 
     pool.getConnection(function (err, connection)
     {

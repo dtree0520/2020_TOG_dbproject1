@@ -159,7 +159,7 @@
     <input type="hidden" id="year"  value ="<%=year%>"/>
     <input type="hidden" id="sem"  value ="<%=semester%>"/>
     <script>
-        $(".checkTr").click(function(){
+        $(".checkTr").click(function(){// 수강 가능한 과목 현황에서 각 행 클릭 시 수강 추가 테이블에 클릭한 행 정보 저장
             var tr = $(this);
             var td = tr.children();
             var cname = td.eq(0).text();
@@ -174,7 +174,7 @@
             $("#lecture_time").html(lecture_time);
             return true;
         });
-        $(document).ready(function(){
+        $(document).ready(function(){// 수강 등록 테이블에서 등록 취소하고 싶은 행 클릭시 취소 문구와 함께 삭제 가능
             $(document).on("click", ".newTr", function(){
                 var result = confirm("수강등록을 취소하시겠습니까?");
                 if(result){
@@ -184,7 +184,7 @@
                 }
             });
         })
-        function addRow(tableid) {
+        function addRow(tableid) {// 수강 추가 테이블에서 수강등록 버튼 클릭 시 수강 등록 테이블에 과목 정보 추가
             var sid = document.getElementById("student_id").value;
             var table = document.getElementById(tableid);
             var rowlen = table.rows.length;
@@ -218,11 +218,12 @@
 
                         total_credit_hours += Number(temptd[2].innerText);
                     }
-                    if (temptd[0].innerText == cname) {
+                    if (temptd[0].innerText == cname) {// 같은 이름의 다른 과목을 등록 테이블에 추가하려고 할 때
                         alert("이미 등록되어있는 과목입니다.");
                         temptrs[rowlen-1].remove();
                         return false;
-                    } // --> 실제 코드입니다. 최대 이수 학점 테스트 시 주석처리
+                    }
+                    // 강의 시간이 겹칠 때
                     var fday = lecture_time.substr(0,2);
                     var sday = lecture_time.substr(3,2);
                     if(sday.length == 1){
@@ -247,14 +248,14 @@
                     if(j == rowlen - 2)
                         break;
                 }
-
+                // 최대 이수학점보다 더 많은 학점을 이수하려고 할 때
                 if(total_credit_hours > 24){
                     alert("수강신청은 최대 24학점까지 가능합니다.");
                     temptrs[rowlen-1].remove();
                     return false;
                 }
             }
-            $.ajax({
+            $.ajax({// 서버로 데이터 전송
                 url:'/login/simulcheck/'+sid,
                 type:'post',
                 data:{"sid":sid, "cname":cname, "instructor":instructor},
@@ -262,13 +263,13 @@
                     var sign = JSON.parse(JSON.stringify(data));
                     sign = sign.data;
 
-                    if(sign == "not okay") {
+                    if(sign == "not okay") {// 이전에 수강했던 과목의 학점이 B0이상일 때 재수강 불가
                         alert("재수강이 불가한 과목입니다");
                         temptrs[rowlen-1].remove();
-                    } else if (sign == "not okay by prenum"){
+                    } else if (sign == "not okay by prenum"){// 선수과목 미수강 시 해당 과목 수강 불가
                         alert("선이수 과목을 먼저 수강하시기 바랍니다.");
                         temptrs[rowlen-1].remove();
-                    } else{
+                    } else{// 등록 테이블에 정보 추가
                         row.setAttribute("class", "newTr");
 
                         row.insertCell(0).innerHTML = cname;
@@ -282,7 +283,7 @@
                 }
             })   //ajax
         }
-
+        // 수강 등록 테이블에서 수강신청 버튼 클릭 시
         $("#submitBtn").click(function(){
             var pass = document.getElementById("pass").value;
 
@@ -295,7 +296,7 @@
             var trs = table.getElementsByTagName("tr");
 
             var trlen = table.rows.length;
-            if(trlen == 2){
+            if(trlen == 2){// 아무 정보도 없는데 수강신청 버튼을 누른 경우
                 alert("신청할 수강과목이 없습니다.");
                 return false;
             }
@@ -304,7 +305,7 @@
             var instructors = new Array();
             var lecture_times = new Array();
 
-            for(var i = 1 ; i < trlen - 1 ; i++){
+            for(var i = 1 ; i < trlen - 1 ; i++){// 수강 등록 테이블에 존재하는 모든 과목 정보들
                 var tr = trs[i];
                 var td = tr.getElementsByTagName("td");
 
@@ -313,13 +314,13 @@
                 lecture_times[i-1] = td[3].innerText;
             }
 
-            if($("#password").val() != pass){
+            if($("#password").val() != pass){// 비밀번호가 일치하지 않을 때
                 $("#password").val("");
                 $("#password").focus();
                 alert("비밀번호가 일치하지 않습니다.");
                 return false;
             }
-            else{
+            else{// 수강신청이 완료되기 전 마지막으로 한 번 더 확인하기 위한 문구
                 var result = confirm("수강 신청을 하시겠습니까?");
                 if(!result){
                     return false;
@@ -338,7 +339,7 @@
                 success: function(data){
                     data = JSON.parse(JSON.stringify(data));
                     data = data.data;
-                    if(data=="no insert"){
+                    if(data=="no insert"){// 이미 수강신청을 완료했었는데 또 수강신청을 하려는 경우
                         alert("이미 수강신청이 완료되었습니다.");
                         document.location.href="/login/main/" + student_id;
                     }
